@@ -202,7 +202,7 @@ export default function Lab1() {
                         value="Wonderland"
                         title="The last name"
                         id="wd-text-fields-last-name" /> <br />
-                    <textarea cols="20" rows="25"
+                    <textarea cols={20} rows={25}
                         placeholder="Biography"
                         title="tooltip">Some text
                     </textarea>
