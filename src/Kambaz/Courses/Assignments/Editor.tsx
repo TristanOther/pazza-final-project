@@ -1,4 +1,4 @@
-import { Form, Button, Dropdown, Col, Row, Table } from "react-bootstrap";
+import { Form, Button, Dropdown, Col, Row } from "react-bootstrap";
 
 export default function AssignmentEditor() {
   return (
