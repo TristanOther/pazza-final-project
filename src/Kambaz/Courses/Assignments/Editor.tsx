@@ -9,7 +9,7 @@ export default function AssignmentEditor() {
           <Form.Label>Assignment Name</Form.Label>
           <Form.Control
             type="text"
-            className="border-secondary"
+            className="border"
             placeholder="Enter assignment name..."
             defaultValue="A1"
           />
@@ -19,7 +19,7 @@ export default function AssignmentEditor() {
         <Form.Group className="mt-3">
           <Form.Control
             as="textarea"
-            className="border-secondary"
+            className="border"
             rows={10}
             placeholder="Enter description..."
           >
@@ -36,7 +36,7 @@ export default function AssignmentEditor() {
           <Form.Label className="me-2 mb-0">Points</Form.Label>
           <Form.Control
             type="text"
-            className="border-secondary"
+            className="border"
             style={{ maxWidth: '50%' }}
             placeholder="Enter points..."
             defaultValue="100"
@@ -75,26 +75,22 @@ export default function AssignmentEditor() {
         </Form.Group>
 
         {/* Submission Type */}
-        <Form.Group className="mt-3 d-flex justify-content-end align-items-center">
+        <Form.Group className="mt-3 d-flex justify-content-end align-items-top">
           <Form.Label className="me-2 mb-0">Submission Type</Form.Label>
-          <Dropdown style={{ width: '50%' }}>
-            <Dropdown.Toggle variant="secondary" id="dropdown-grade-display">
-              Online
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item>Online</Dropdown.Item>
-              <Dropdown.Item>Paper</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Form.Group>
-
-        {/* Checkboxes */}
-        <Form.Group className="mt-3 d-flex justify-content-end align-items-center">
-          {/*<Form.Label className="me-2 mb-0"></Form.Label>*/}
-          <div style={{width: "50%"}}>
+          <div className="border p-2" style={{ width: '50%' }}>
+            <Dropdown>
+              <Dropdown.Toggle variant="secondary" id="dropdown-grade-display">
+                Online
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>Online</Dropdown.Item>
+                <Dropdown.Item>Paper</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
             <Form.Check
               type="checkbox"
               label="Text Entry"
+              className="mt-2"
             />
             <Form.Check
               type="checkbox"
@@ -139,7 +135,7 @@ export default function AssignmentEditor() {
                 <Form.Label className="mt-3"><b>Due</b></Form.Label>
                 <Form.Control
                   type="date"
-                  className="border-secondary"
+                  className="border"
                 />
               </Col>
             </Row>
@@ -148,14 +144,14 @@ export default function AssignmentEditor() {
                 <Form.Label><b>Available From</b></Form.Label>
                 <Form.Control
                   type="date"
-                  className="border-secondary"
+                  className="border"
                 />
               </Col>
               <Col>
                 <Form.Label><b>Until</b></Form.Label>
                 <Form.Control
                   type="date"
-                  className="border-secondary"
+                  className="border"
                 />
               </Col>
             </Row>
