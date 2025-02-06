@@ -87,6 +87,7 @@ export default function AssignmentEditor() {
                 <Dropdown.Item>Paper</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
+            <Form.Label className="mt-3"><b>Online Entry Options</b></Form.Label>
             <Form.Check
               type="checkbox"
               label="Text Entry"
@@ -141,7 +142,7 @@ export default function AssignmentEditor() {
             </Row>
             <Row className="mt-3">
               <Col>
-                <Form.Label><b>Available From</b></Form.Label>
+                <Form.Label><b>Available from</b></Form.Label>
                 <Form.Control
                   type="date"
                   className="border"
@@ -160,6 +161,7 @@ export default function AssignmentEditor() {
 
         {/* Line Separator */}
         <hr className="my-4" />
+
         {/* Cancel and Save Buttons */}
         <div className="float-end">
           <Button variant="secondary" size="lg" className="me-2">Cancel</Button>
