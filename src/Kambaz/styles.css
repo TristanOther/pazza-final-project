@@ -31,3 +31,8 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
 .wd-lesson {
   border-left: 3px solid green !important;
 }
+
+/* Assignments group styling. */
+.wd-assignment {
+  border-left: 3px solid green !important;
+}

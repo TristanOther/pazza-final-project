@@ -61,19 +61,6 @@ export default function Dashboard() {
           </Col>
           <Col className="wd-dashboard-course" style={{ width: "300px" }}>
             <Card>
-              <Link to="/Kambaz/Courses/1200/Home"
-                    className="wd-dashboard-course-link text-decoration-none text-dark">
-                <Card.Img variant="top" src="/images/kambaz/courses/cs1200.jpg" width="100%" height={160}/>
-                <Card.Body>
-                  <Card.Title className="wd-dashboard-course-title">CS1200 Intro</Card.Title>
-                  <Card.Text  className="wd-dashboard-course-description">First Year Seminar</Card.Text>
-                  <Button variant="primary">Go</Button>
-                </Card.Body>
-              </Link>
-            </Card>
-          </Col>
-          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
-            <Card>
               <Link to="/Kambaz/Courses/1210/Home"
                     className="wd-dashboard-course-link text-decoration-none text-dark">
                 <Card.Img variant="top" src="/images/kambaz/courses/cs1210.jpg" width="100%" height={160}/>
