@@ -75,51 +75,53 @@ export default function AssignmentEditor() {
         </Form.Group>
 
         {/* Submission Type */}
-        <div className="d-flex flex-column align-items-center">
-          <span>Submission Type</span>
-          <Form.Group className="mt-3 flex-column">
-            {/*<Form.Label className="me-2 mb-0">Submission Type</Form.Label>*/}
-            <Dropdown style={{ width: '50%' }}>
-              <Dropdown.Toggle variant="secondary" id="dropdown-submission-type">
-                Online
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item>Online</Dropdown.Item>
-                <Dropdown.Item>Paper</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+        <Form.Group className="mt-3 d-flex justify-content-end align-items-center">
+          <Form.Label className="me-2 mb-0">Submission Type</Form.Label>
+          <Dropdown style={{ width: '50%' }}>
+            <Dropdown.Toggle variant="secondary" id="dropdown-grade-display">
+              Online
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item>Online</Dropdown.Item>
+              <Dropdown.Item>Paper</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </Form.Group>
+
+        {/* Checkboxes */}
+        <Form.Group className="mt-3 d-flex justify-content-end align-items-center">
+          {/*<Form.Label className="me-2 mb-0"></Form.Label>*/}
+          <div style={{width: "50%"}}>
             <Form.Check
               type="checkbox"
               label="Text Entry"
-              className="mt-2 w-50"
             />
             <Form.Check
               type="checkbox"
               label="Website URL"
-              className="mt-1 w-50"
+              className="mt-2"
             />
             <Form.Check
               type="checkbox"
               label="Media Recordings"
-              className="mt-1 w-50"
+              className="mt-2"
             />
             <Form.Check
               type="checkbox"
               label="Student Annotation"
-              className="mt-1 w-50"
+              className="mt-2"
             />
             <Form.Check
               type="checkbox"
               label="File Uploads"
-              className="mt-1 w-50"
-              />
-          </Form.Group>
-        </div>
-        
+              className="mt-2"
+            />
+          </div>
+        </Form.Group>
 
         {/* Assignment Assign To, Date Pickers */}
-        <Form.Group className="mb-3">
-          <Form.Label>Assign</Form.Label>
+        <Form.Group className="mt-3 d-flex justify-content-end align-items-top">
+          <Form.Label className="me-2 mb-0">Assign</Form.Label>
           <div className="border p-3" style={{ width: "50%" }}>
             <Row>
               <Col sm={6}>
