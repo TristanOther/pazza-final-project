@@ -1,6 +1,14 @@
 import { Form, Button, Dropdown, Col, Row } from "react-bootstrap";
+import { useParams, Link } from "react-router-dom";
+import * as db from "../../Database";
 
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams();
+  const assignment = db.assignments.find(a => String(a._id) === String(aid));
+
+  // Check in case assignment is not found.
+  if (!assignment) return <p className="text-secondary">Assignment not found.</p>;
+
   return (
     <div style={{ width: "75%" }}>
       <Form>
@@ -11,7 +19,7 @@ export default function AssignmentEditor() {
             type="text"
             className="border"
             placeholder="Enter assignment name..."
-            defaultValue="A1"
+            defaultValue={assignment.title}
           />
         </Form.Group>
 
@@ -23,11 +31,7 @@ export default function AssignmentEditor() {
             rows={10}
             placeholder="Enter description..."
           >
-            The assignment is available online Submit a link to the landing page of your Web 
-            application on Netlify. The landing page should include the following: - Your full name 
-            and section - Links to each of the lab assignments - Link to the Kanbas application - 
-            Links to all relevant source code repositories The Kanbas application should include a 
-            link to navigate back to the landing page.
+            {assignment.description}
           </Form.Control>
         </Form.Group>
 
@@ -39,7 +43,7 @@ export default function AssignmentEditor() {
             className="border"
             style={{ maxWidth: '50%' }}
             placeholder="Enter points..."
-            defaultValue="100"
+            defaultValue={assignment.points}
           />
         </Form.Group>
 
@@ -137,6 +141,7 @@ export default function AssignmentEditor() {
                 <Form.Control
                   type="date"
                   className="border"
+                  defaultValue={assignment.dueDate.split(' ')[0]}
                 />
               </Col>
             </Row>
@@ -146,6 +151,7 @@ export default function AssignmentEditor() {
                 <Form.Control
                   type="date"
                   className="border"
+                  defaultValue={assignment.availableFrom.split(' ')[0]}
                 />
               </Col>
               <Col>
@@ -153,6 +159,7 @@ export default function AssignmentEditor() {
                 <Form.Control
                   type="date"
                   className="border"
+                  defaultValue={assignment.availableUntil.split(' ')[0]}
                 />
               </Col>
             </Row>
@@ -164,8 +171,12 @@ export default function AssignmentEditor() {
 
         {/* Cancel and Save Buttons */}
         <div className="float-end">
+        <Link to={`/Kambaz/Courses/${cid}/Assignments`} className="text-decoration-none">
           <Button variant="secondary" size="lg" className="me-2">Cancel</Button>
+        </Link>
+        <Link to={`/Kambaz/Courses/${cid}/Assignments`} className="text-decoration-none">
           <Button variant="danger" size="lg">Save</Button>
+        </Link>
         </div>
       </Form>
     </div>

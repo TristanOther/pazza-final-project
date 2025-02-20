@@ -1,0 +1,92 @@
+[
+  {
+    "_id": "A101",
+    "title": "Propulsion Assignment",
+    "course": "RS101",
+    "description": "Learn about propulsion.",
+    "points": 100,
+    "dueDate": "1970-01-01 12:00:00.000",
+    "availableFrom": "1970-01-01 12:00:00.000",
+    "availableUntil": "1970-01-01 12:00:00.000"
+  },
+  {
+    "_id": "A102",
+    "title": "Combustion Analysis",
+    "course": "RS101",
+    "description": "Learn about combustion.",
+    "points": 100,
+    "dueDate": "1970-01-01 12:00:00.000",
+    "availableFrom": "1970-01-01 12:00:00.000",
+    "availableUntil": "1970-01-01 12:00:00.000"
+  },
+  {
+    "_id": "A103",
+    "title": "Nozzle Design Project",
+    "course": "RS101",
+    "description": "Learn about nozzle design.",
+    "points": 100,
+    "dueDate": "1970-01-01 12:00:00.000",
+    "availableFrom": "1970-01-01 12:00:00.000",
+    "availableUntil": "1970-01-01 12:00:00.000"
+  },
+  {
+    "_id": "A201",
+    "title": "Aerodynamics Quiz",
+    "course": "RS102",
+    "description": "Check knowledge on aerodynamics.",
+    "points": 100,
+    "dueDate": "1970-01-01 12:00:00.000",
+    "availableFrom": "1970-01-01 12:00:00.000",
+    "availableUntil": "1970-01-01 12:00:00.000"
+  },
+  {
+    "_id": "A202",
+    "title": "Flow Analysis",
+    "course": "RS102",
+    "description": "Learn about flow analysis.",
+    "points": 100,
+    "dueDate": "1970-01-01 12:00:00.000",
+    "availableFrom": "1970-01-01 12:00:00.000",
+    "availableUntil": "1970-01-01 12:00:00.000"
+  },
+  {
+    "_id": "A203",
+    "title": "Heating Analysis",
+    "course": "RS102",
+    "description": "Learn about heating analysis.",
+    "points": 100,
+    "dueDate": "1970-01-01 12:00:00.000",
+    "availableFrom": "1970-01-01 12:00:00.000",
+    "availableUntil": "1970-01-01 12:00:00.000"
+  },
+  {
+    "_id": "A301",
+    "title": "Structural Design Task",
+    "course": "RS103",
+    "description": "Learn about structural design.",
+    "points": 100,
+    "dueDate": "1970-01-01 12:00:00.000",
+    "availableFrom": "1970-01-01 12:00:00.000",
+    "availableUntil": "1970-01-01 12:00:00.000"
+  },
+  {
+    "_id": "A302",
+    "title": "Orbital Calculations",
+    "course": "RS103",
+    "description": "Learn about orbital calculations.",
+    "points": 100,
+    "dueDate": "1970-01-01 12:00:00.000",
+    "availableFrom": "1970-01-01 12:00:00.000",
+    "availableUntil": "1970-01-01 12:00:00.000"
+  },
+  {
+    "_id": "A303",
+    "title": "Systems Engineering Exam",
+    "course": "RS103",
+    "description": "Check knowledge on systems engineering.",
+    "points": 100,
+    "dueDate": "1970-01-01 12:00:00.000",
+    "availableFrom": "1970-01-01 12:00:00.000",
+    "availableUntil": "1970-01-01 12:00:00.000"
+  }
+]
