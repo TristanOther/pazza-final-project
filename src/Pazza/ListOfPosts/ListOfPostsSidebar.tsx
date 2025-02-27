@@ -2,6 +2,8 @@ import PostCard from "./PostCard";
 
 export default function ListOfPostsSidebar() {
     return (
-        <PostCard />
+        <div style={{ width: "100%" }}>
+            <PostCard />
+        </div>
     );
 }
