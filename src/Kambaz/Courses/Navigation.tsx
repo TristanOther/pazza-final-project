@@ -13,7 +13,7 @@ export default function CourseNavigation() {
         const isActive = pathname.includes(`/${label}`);
 
         return (
-          <Link 
+          <Link
             key={label}
             to={linkPath}
             id={`wd-course-${label.toLowerCase()}-link`}
