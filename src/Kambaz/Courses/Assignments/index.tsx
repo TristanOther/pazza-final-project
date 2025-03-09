@@ -7,6 +7,7 @@ import AssignmentControls from "./AssignmentControls";
 import GreenCheckmark from "./GreenCheckmark";
 import { useParams } from "react-router-dom";
 import * as db from "../../Database";
+import { FacultyOnlyOptions } from "../../Account/FacultyOnlyOptions";
 
 export default function Assignments() {
   const { cid } = useParams();
@@ -19,25 +20,33 @@ export default function Assignments() {
       <ListGroup className="rounded-0 mt-5" id="wd-assignments">
         <ListGroup.Item className="wd-module p-0 mb-5 fs-5 border-gray">
           <div className="wd-title p-3 ps-2 bg-secondary">
-            <BsGripVertical className="me-2 fs-3" />
+            <FacultyOnlyOptions>
+              <BsGripVertical className="me-2 fs-3" />
+            </FacultyOnlyOptions>
             <MdArrowDropDown />
             ASSIGNMENTS
             <div className="float-end">
               <span className="text-black border border-black badge rounded-pill">40% of Total</span>
-              <BsPlus className="fs-2" />
-              <IoEllipsisVertical className="fs-4" />
+              <FacultyOnlyOptions>
+                <BsPlus className="fs-2" />
+                <IoEllipsisVertical className="fs-4" />
+              </FacultyOnlyOptions>
             </div>
           </div>
           <ListGroup className="wd-assignments rounded-0">
             {assignments.map((assignment) => (
               <ListGroup.Item key={assignment._id} className="wd-assignment p-3 ps-1">
                 <div className="float-start mt-2">
-                  <BsGripVertical className="me-2 fs-3" />
+                  <FacultyOnlyOptions>
+                    <BsGripVertical className="me-2 fs-3" />
+                  </FacultyOnlyOptions>
                   <LuClipboardPenLine style={{ color: "green" }} className="me-2 fs-4" />
                 </div>
                 <div className="float-end mt-2">
-                  <GreenCheckmark />
-                  <IoEllipsisVertical className="fs-4" />
+                  <FacultyOnlyOptions>
+                    <GreenCheckmark />
+                    <IoEllipsisVertical className="fs-4" />
+                  </FacultyOnlyOptions>
                 </div>
                 <div className="float-start ms-2">
                   <a href={`#/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
