@@ -4,39 +4,29 @@ import Dashboard from "./Dashboard";
 import KambazNavigation from "./Navigation";
 import Courses from "./Courses";
 import "./styles.css";
-import * as db from "./Database";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import ProtectedRoute from "./Account/ProtectedRoute";
+import { useDispatch, useSelector } from "react-redux";
+import { addCourse, deleteCourse, updateCourse } from "./Courses/reducer";
+import { enroll, unenroll } from "./Enrollments/reducer";
+import { v4 as uuidv4 } from "uuid";
+import ProtectedCourse from "./Enrollments/ProtectedCourse";
 
 export default function Kambaz() {
-  // Courses state initialized with courses from our DB.
-  const [courses, setCourses] = useState<any[]>(db.courses);
+  const dispatch = useDispatch();
+  const { courses } = useSelector((state: any) => state.coursesReducer);
+  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
   // Course state initialized with a template course.
   const [course, setCourse] = useState<any>({
-    _id: "1234", name: "New Course", number: "New Number",
-    startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
+    _id: uuidv4(),
+    name: "New Course",
+    number: "New Number",
+    startDate: "2023-09-10",
+    endDate: "2023-12-15",
+    imgPath: "/images/react.jpg",
+    description: "New Description",
+    author: null
   });
-  // Function for adding a new course to our list of courses.
-  const addNewCourse = () => {
-    setCourses([...courses, { ...course, _id: uuidv4() }]);
-  };
-  // Function for deleting a course from our list of courses.
-  const deleteCourse = (courseId: any) => {
-    setCourses(courses.filter((course) => course._id !== courseId));
-  };
-  // Function for updating a course's details.
-  const updateCourse = () => {
-    setCourses(
-      courses.map((c) => {
-        if (c._id === course._id) {
-          return course;
-        } else {
-          return c;
-        }
-      })
-    );
-  };
 
   return (
     <div id="wd-kambaz">
@@ -53,9 +43,21 @@ export default function Kambaz() {
                   courses={courses}
                   course={course}
                   setCourse={setCourse}
-                  addNewCourse={addNewCourse}
-                  deleteCourse={deleteCourse}
-                  updateCourse={updateCourse}
+                  addNewCourse={(course: any) => {
+                    dispatch(addCourse(course));
+                    dispatch(enroll({ user: course.author, course: course._id}));
+                    {/* Because the ID is generated at the top of this file instead of in the reducer
+                        so we can reuse the ID for the enrollment, the ID on the initialized course
+                        needs to be reset after every course creation. */}
+                    setCourse({ ...course, _id: uuidv4() });
+                  }}
+                  deleteCourse={(courseId) => {
+                    dispatch(deleteCourse(courseId));
+                    enrollments.map((e: any) => {
+                      if (e.course === courseId) dispatch(unenroll(e._id));
+                    });
+                  }}
+                  updateCourse={() => dispatch(updateCourse(course))}
                 />
               </ProtectedRoute>
             } 
@@ -64,7 +66,9 @@ export default function Kambaz() {
             path="/Courses/:cid/*"
             element={
               <ProtectedRoute>
-                <Courses courses={courses} />
+                <ProtectedCourse>
+                  <Courses courses={courses} />
+                </ProtectedCourse>
               </ProtectedRoute>
             }
           />
