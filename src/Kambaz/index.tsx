@@ -18,7 +18,6 @@ export default function Kambaz() {
   const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
   // Course state initialized with a template course.
   const [course, setCourse] = useState<any>({
-    _id: uuidv4(),
     name: "New Course",
     number: "New Number",
     startDate: "2023-09-10",
@@ -43,13 +42,10 @@ export default function Kambaz() {
                   courses={courses}
                   course={course}
                   setCourse={setCourse}
-                  addNewCourse={(course: any) => {
-                    dispatch(addCourse(course));
-                    dispatch(enroll({ user: course.author, course: course._id}));
-                    {/* Because the ID is generated at the top of this file instead of in the reducer
-                        so we can reuse the ID for the enrollment, the ID on the initialized course
-                        needs to be reset after every course creation. */}
-                    setCourse({ ...course, _id: uuidv4() });
+                  addNewCourse={async (course: any) => {
+                    const newCourseId = uuidv4();
+                    dispatch(addCourse({ ...course, _id: newCourseId }));
+                    dispatch(enroll({ user: course.author, course: newCourseId}));
                   }}
                   deleteCourse={(courseId) => {
                     dispatch(deleteCourse(courseId));
