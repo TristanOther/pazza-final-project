@@ -188,7 +188,8 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
         </Row>
       </div>
     </div>
-);}
+  )
+;}
 
 
 /* Saved in case I want the content for adding more courses later.
