@@ -7,8 +7,8 @@ import PeopleTable from "./People/Table";
 import Pazza from "../../Pazza";
 import { Navigate, Route, Routes, useLocation, useParams } from "react-router";
 import { FaAlignJustify } from "react-icons/fa";
-import { courses } from "../Database";
-export default function Courses() {
+
+export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
   const { pathname } = useLocation();
