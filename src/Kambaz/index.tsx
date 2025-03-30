@@ -4,19 +4,16 @@ import Dashboard from "./Dashboard";
 import KambazNavigation from "./Navigation";
 import Courses from "./Courses";
 import "./styles.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProtectedRoute from "./Account/ProtectedRoute";
-import { useDispatch, useSelector } from "react-redux";
-import { addCourse, deleteCourse, updateCourse } from "./Courses/reducer";
-import { enroll, unenroll } from "./Enrollments/reducer";
-import { v4 as uuidv4 } from "uuid";
+import { useSelector } from "react-redux";
 import ProtectedCourse from "./Enrollments/ProtectedCourse";
+import Session from "./Account/Session";
+
+import * as userClient from "./Account/client";
+import * as courseClient from "./Courses/client";
 
 export default function Kambaz() {
-  const dispatch = useDispatch();
-  const { courses } = useSelector((state: any) => state.coursesReducer);
-  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
-  // Course state initialized with a template course.
   const [course, setCourse] = useState<any>({
     name: "New Course",
     number: "New Number",
@@ -26,53 +23,77 @@ export default function Kambaz() {
     description: "New Description",
     author: null
   });
+  const [courses, setCourses] = useState<any[]>([]);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const addNewCourse = async () => {
+    const newCourse = await userClient.createCourse(course);
+    setCourses([ ...courses, newCourse ]);
+  };
+  const deleteCourse = async (courseId: string) => {
+    await courseClient.deleteCourse(courseId);
+    setCourses(courses.filter((course) => course._id !== courseId));
+    //enrollments.map((e: any) => {
+    // if (e.course === courseId) dispatch(unenroll(e._id));
+    //});
+  };
+  const updateCourse = async () => {
+    await courseClient.updateCourse(course);
+    setCourses(courses.map((c) => {
+        if (c._id === course._id) { return course; }
+        else { return c; }
+    }));
+  };
+  const fetchCourses = async () => {
+    try {
+      const courses = await userClient.findMyCourses();
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchCourses();
+  }, [currentUser]);
 
   return (
-    <div id="wd-kambaz">
-      <KambazNavigation />
-      <div className="wd-main-content-offset p-3">
-        <Routes>
-          <Route path="/" element={<Navigate to="Account" />} />
-          <Route path="/Account/*" element={<Account />} />
-          <Route 
-            path="/Dashboard" 
-            element={
-              <ProtectedRoute>
-                <Dashboard
-                  courses={courses}
-                  course={course}
-                  setCourse={setCourse}
-                  addNewCourse={async (course: any) => {
-                    const newCourseId = uuidv4();
-                    dispatch(addCourse({ ...course, _id: newCourseId }));
-                    dispatch(enroll({ user: course.author, course: newCourseId}));
-                  }}
-                  deleteCourse={(courseId) => {
-                    dispatch(deleteCourse(courseId));
-                    enrollments.map((e: any) => {
-                      if (e.course === courseId) dispatch(unenroll(e._id));
-                    });
-                  }}
-                  updateCourse={() => dispatch(updateCourse(course))}
-                />
-              </ProtectedRoute>
-            } 
-          />
-          <Route
-            path="/Courses/:cid/*"
-            element={
-              <ProtectedRoute>
-                <ProtectedCourse>
-                  <Courses courses={courses} />
-                </ProtectedCourse>
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/Calendar" element={<h1>Calendar</h1>} />
-          <Route path="/Inbox" element={<h1>Inbox</h1>} />
-        </Routes>
+    <Session>
+      <div id="wd-kambaz">
+        <KambazNavigation />
+        <div className="wd-main-content-offset p-3">
+          <Routes>
+            <Route path="/" element={<Navigate to="Account" />} />
+            <Route path="/Account/*" element={<Account />} />
+            <Route 
+              path="/Dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard
+                    courses={courses}
+                    course={course}
+                    setCourse={setCourse}
+                    addNewCourse={addNewCourse}
+                    deleteCourse={(courseId) => deleteCourse(courseId)}
+                    updateCourse={updateCourse}
+                  />
+                </ProtectedRoute>
+              } 
+            />
+            <Route
+              path="/Courses/:cid/*"
+              element={
+                <ProtectedRoute>
+                  <ProtectedCourse>
+                    <Courses courses={courses} />
+                  </ProtectedCourse>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/Calendar" element={<h1>Calendar</h1>} />
+            <Route path="/Inbox" element={<h1>Inbox</h1>} />
+          </Routes>
+        </div>
       </div>
-    </div>
-);
+    </Session>
+  );
 }
 
