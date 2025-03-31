@@ -6,6 +6,7 @@ import AssignmentEditor from "./Assignments/Editor";
 import PeopleTable from "./People/Table";
 import { Navigate, Route, Routes, useLocation, useParams } from "react-router";
 import { FaAlignJustify } from "react-icons/fa";
+import FacultyOnlyRoute from "../Account/FacultyOnlyRoute";
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
@@ -30,7 +31,10 @@ export default function Courses({ courses }: { courses: any[]; }) {
             <Route path="Piazza" element={<h2>Piazza</h2>} />
             <Route path="Zoom" element={<h2>Zoom</h2>} />
             <Route path="Assignments" element={<Assignments />} />
-            <Route path="Assignments/:aid" element={<AssignmentEditor />} />
+            <Route 
+              path="Assignments/:aid" 
+              element={ <FacultyOnlyRoute fallback={"../Assignments"}> <AssignmentEditor /> </FacultyOnlyRoute> }
+            />
             <Route path="Quizzes" element={<h2>Quizzes</h2>} />
             <Route path="Grades" element={<h2>Grades</h2>} />
             <Route path="People" element={<PeopleTable />} />
