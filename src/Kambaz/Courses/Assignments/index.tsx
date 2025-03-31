@@ -9,16 +9,29 @@ import { useParams } from "react-router-dom";
 import { FacultyOnlyOptions } from "../../Account/FacultyOnlyOptions";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
-import { useState } from "react";
-import { deleteAssignment } from "./reducer";
+import { useEffect, useState } from "react";
+import { deleteAssignment, setAssignments } from "./reducer";
+
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
 
 export default function Assignments() {
   const { cid } = useParams();
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
-  const courseAssignments = assignments.filter((a: any) => a.course === cid);
   const [showModal, setShowModal] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState({_id: null, title: null});
   const dispatch = useDispatch();
+  const removeAssignment = async (assignmentId: string) => {
+    await assignmentsClient.deleteAssignment(assignmentId);
+    dispatch(deleteAssignment(assignmentId));
+  };
+  const fetchAssignments = async () => {
+    const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+    dispatch(setAssignments(assignments));
+  };
+  useEffect(() => {
+    fetchAssignments();
+  }, [])
 
   const handleDeleteClick = (assignment: any) => {
     setSelectedAssignment(assignment);
@@ -26,8 +39,8 @@ export default function Assignments() {
   };
 
   const confirmDelete = () => {
-    if (selectedAssignment) {
-      dispatch(deleteAssignment(selectedAssignment._id));
+    if (selectedAssignment?._id) {
+      removeAssignment(selectedAssignment._id);
     }
     setShowModal(false);
   };
@@ -53,7 +66,7 @@ export default function Assignments() {
             </div>
           </div>
           <ListGroup className="wd-assignments rounded-0">
-            {courseAssignments.map((assignment: any) => (
+            {assignments.map((assignment: any) => (
               <ListGroup.Item key={assignment._id} className="wd-assignment p-3 ps-1">
                 <div className="float-start mt-2">
                   <FacultyOnlyOptions>

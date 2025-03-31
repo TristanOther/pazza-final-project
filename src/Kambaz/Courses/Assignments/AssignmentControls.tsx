@@ -11,12 +11,12 @@ export default function AssignmentControls() {
     <div id="wd-assignment-controls" className="text-nowrap">
       <FacultyOnlyOptions>
         <Link to={`/Kambaz/Courses/${cid}/Assignments/new`} className="text-decoration-none">
-          <Button variant="danger" size="lg" className="text-white float-end" id="wd-view-progress">
+          <Button variant="danger" size="lg" className="text-white float-end" id="wd-add-group-btn">
             <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
             Assignment
           </Button>
         </Link>
-        <Button variant="secondary" size="lg" className="text-black me-1 float-end" id="wd-add-module-btn">
+        <Button variant="secondary" size="lg" className="text-black me-1 float-end" id="wd-add-assignment-btn">
           <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
           Group
         </Button>

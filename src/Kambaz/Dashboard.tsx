@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Col, FormControl, ListGroup, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { enroll, unenroll } from "./Enrollments/reducer";
+import { enroll, unenroll, setEnrollments } from "./Enrollments/reducer";
 
-export default function Dashboard({ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse }: {
+import * as courseClient from "./Courses/client";
+import * as enrollmentsClient from "./Enrollments/client.ts";
+
+export default function Dashboard({ courses, fetchCourses, course, setCourse, addNewCourse, deleteCourse, updateCourse }: {
   courses: any[]; 
+  fetchCourses: () => void;
   course: any;
   setCourse: (course: any) => void;
   addNewCourse: () => void;
@@ -14,12 +18,48 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
 }) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [enrollmentMode, setEnrollmentMode] = useState("disabled");
+  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
   const dispatch = useDispatch();
+  const createEnrollmentForCourse = async (courseId: any) => {
+    if (!courseId) return;
+    const enrollment = await courseClient.createEnrollmentForCourse(courseId, currentUser._id);
+    dispatch(enroll(enrollment));
+  };
+  const removeEnrollment = async (enrollmentId: string) => {
+    await enrollmentsClient.deleteEnrollment(enrollmentId);
+    dispatch(unenroll(enrollmentId));
+  };
+
+  const [allCourses, setAllCourses] = useState<any[]>([]);
+  const fetchAllCourses = async () => {
+    try {
+      const allCourses = await courseClient.fetchAllCourses();
+      setAllCourses(allCourses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchAllCourses();
+  }, [currentUser]);
+  
+  useEffect(() => {
+    fetchCourses();
+    fetchAllCourses();
+  }, [enrollments, fetchCourses]);
+
+  const fetchEnrollments = async () => {
+    const es = await enrollmentsClient.fetchEnrollments();
+    dispatch(setEnrollments(es));
+  };
+  useEffect(() => {
+    fetchEnrollments();
+  }, [])
 
   {/* This function dynamically builds the enrollment listgroup item for toggling enrollments. */}
   function buildCourseEnrollBar(c: any) {
-    const e = courses.find((enrollment: any) => 
-      enrollment.user === currentUser._id && enrollment.course === c._id
+    const e = enrollments.find((enrollment: any) => 
+      enrollment.course === c._id && enrollment.user === currentUser._id
     );
     return (
       <ListGroup.Item className="d-flex align-items-center" key={c._id}>
@@ -28,7 +68,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
           <Button 
             className="btn btn-danger" 
             style={{ width: "5%" }} 
-            onClick={() => dispatch(unenroll(e._id))}
+            onClick={() => removeEnrollment(e._id)}
           > 
             Unenroll 
           </Button> 
@@ -37,7 +77,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
           <Button 
             className="btn btn-success"
             style={{ width: "5%" }} 
-            onClick={() => dispatch(enroll({ user: currentUser._id, course: c._id }))}
+            onClick={() => createEnrollmentForCourse(c._id)}
           > 
             Enroll
           </Button> 
@@ -114,7 +154,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
           </div>
           { enrollmentMode === "enroll" &&
             <ListGroup className="my-2">
-              {courses.map((c) => buildCourseEnrollBar(c))}
+              {allCourses.map((c) => buildCourseEnrollBar(c))}
             </ListGroup>
           }
           { enrollmentMode === "unenroll" &&

@@ -69,6 +69,7 @@ export default function Kambaz() {
                 <ProtectedRoute>
                   <Dashboard
                     courses={courses}
+                    fetchCourses={fetchCourses}
                     course={course}
                     setCourse={setCourse}
                     addNewCourse={addNewCourse}
