@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 export default function PeopleTable({ users = [] }: { users?: any[] }) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
-  function personName(user) {
+  function personName(user: any) {
     return (
       <>
         <FaUserCircle className="me-2 fs-1 text-secondary" />
