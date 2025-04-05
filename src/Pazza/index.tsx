@@ -5,11 +5,23 @@ import PostScreen from "./PostScreen/PostScreen.tsx";
 
 export default function Modules() {
   return (
-    <div>
-      <PazzaNavigation />
-      <FileFolderNavigation/>
-      <ListOfPostsSidebar />
-      <PostScreen />
+    <div id="wd-pazza-q-and-a">
+        <div className="mx-3 my-3">
+            <div style={{ width: "100%" }}>
+                <PazzaNavigation />
+            </div>
+            <div style={{ width: "100%" }}>
+                <FileFolderNavigation/>
+            </div>
+            <div className="d-flex" style={{ width: "100%" }}>
+                <div className="flex-fill" style={{ width: "30%" }}>
+                    <ListOfPostsSidebar />
+                </div>
+                <div className="flex-fill" style={{ width: "70%" }}>
+                    <PostScreen />
+                </div>
+            </div>
+        </div>
     </div>
   );
 }

@@ -1,6 +1,9 @@
+import PostCard from "./PostCard";
+
 export default function ListOfPostsSidebar() {
     return (
-        <div />
-        // Import list of posts files...
+        <div style={{ width: "100%" }}>
+            <PostCard />
+        </div>
     );
 }
