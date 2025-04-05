@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router";
 import * as client from "../../Account/client";
 import { FaPencil } from "react-icons/fa6";
 import { FormControl } from "react-bootstrap";
+import { useSelector } from "react-redux";
 export default function PeopleDetails() {
   const { uid } = useParams();
   const [user, setUser] = useState<any>({});
@@ -13,6 +14,9 @@ export default function PeopleDetails() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [editing, setEditing] = useState(false);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  if (!currentUser || currentUser.role !== "ADMIN") navigate(-1);
 
   const saveUser = async () => {
     const [firstName, lastName] = name.split(" ");
