@@ -32,12 +32,15 @@ export default function AssignmentEditor() {
 
   const createAssignmentForCourse = async () => {
     if (!cid) return;
-    const assignment = await coursesClient.createAssignmentForCourse(cid, formData);
-    dispatch(addAssignment(assignment));
+    console.log(assignment);
+    const a = await coursesClient.createAssignmentForCourse(cid, formData);
+    console.log(a);
+    dispatch(addAssignment(a));
   };
 
   const saveAssignment = async () => {
-    const assignment = await assignmentsClient.updateAssignment(formData);
+    console.log(assignment);
+    await assignmentsClient.updateAssignment(formData);
     dispatch(updateAssignment(assignment));
   };
 
@@ -187,7 +190,7 @@ export default function AssignmentEditor() {
                 <Form.Control
                   type="date"
                   className="border"
-                  defaultValue={assignment.dueDate.split(' ')[0]}
+                  defaultValue={assignment.dueDate?.split("T")[0] || ""}
                   onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
                 />
               </Col>
@@ -198,7 +201,7 @@ export default function AssignmentEditor() {
                 <Form.Control
                   type="date"
                   className="border"
-                  defaultValue={assignment.availableFrom.split(' ')[0]}
+                  defaultValue={assignment.availableFrom?.split("T")[0] || ""}
                   onChange={(e) => setFormData({...formData, availableFrom: e.target.value})}
                 />
               </Col>
@@ -207,7 +210,7 @@ export default function AssignmentEditor() {
                 <Form.Control
                   type="date"
                   className="border"
-                  defaultValue={assignment.availableUntil.split(' ')[0]}
+                  defaultValue={assignment.availableUntil?.split("T")[0] || ""}
                   onChange={(e) => setFormData({...formData, availableUntil: e.target.value})}
                 />
               </Col>

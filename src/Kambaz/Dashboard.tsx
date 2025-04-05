@@ -1,96 +1,29 @@
-import { useEffect, useState } from "react";
-import { Button, Card, Col, FormControl, ListGroup, Row } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { enroll, unenroll, setEnrollments } from "./Enrollments/reducer";
 
-import * as courseClient from "./Courses/client";
-import * as enrollmentsClient from "./Enrollments/client.ts";
+import { FacultyOnlyOptions } from "./Account/FacultyOnlyOptions.tsx";
 
-export default function Dashboard({ courses, fetchCourses, course, setCourse, addNewCourse, deleteCourse, updateCourse }: {
+export default function Dashboard({ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrolling, setEnrolling, updateEnrollment }: {
   courses: any[]; 
-  fetchCourses: () => void;
   course: any;
   setCourse: (course: any) => void;
   addNewCourse: () => void;
   deleteCourse: (course: any) => void;
   updateCourse: () => void; 
+  enrolling: boolean;
+  setEnrolling: (enrolling: boolean) => void;
+  updateEnrollment: (courseId: string, enrolled: boolean) => void;
 }) {
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const [enrollmentMode, setEnrollmentMode] = useState("disabled");
-  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
-  const dispatch = useDispatch();
-  const createEnrollmentForCourse = async (courseId: any) => {
-    if (!courseId) return;
-    const enrollment = await courseClient.createEnrollmentForCourse(courseId, currentUser._id);
-    dispatch(enroll(enrollment));
-  };
-  const removeEnrollment = async (enrollmentId: string) => {
-    await enrollmentsClient.deleteEnrollment(enrollmentId);
-    dispatch(unenroll(enrollmentId));
-  };
-
-  const [allCourses, setAllCourses] = useState<any[]>([]);
-  const fetchAllCourses = async () => {
-    try {
-      const allCourses = await courseClient.fetchAllCourses();
-      setAllCourses(allCourses);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    fetchAllCourses();
-  }, [currentUser]);
-  
-  useEffect(() => {
-    fetchCourses();
-    fetchAllCourses();
-  }, [enrollments, fetchCourses]);
-
-  const fetchEnrollments = async () => {
-    const es = await enrollmentsClient.fetchEnrollments();
-    dispatch(setEnrollments(es));
-  };
-  useEffect(() => {
-    fetchEnrollments();
-  }, [])
-
-  {/* This function dynamically builds the enrollment listgroup item for toggling enrollments. */}
-  function buildCourseEnrollBar(c: any) {
-    const e = enrollments.find((enrollment: any) => 
-      enrollment.course === c._id && enrollment.user === currentUser._id
-    );
-    return (
-      <ListGroup.Item className="d-flex align-items-center" key={c._id}>
-        <span className="me-auto">[{c._id}] {c.name}</span>
-        { e &&
-          <Button 
-            className="btn btn-danger" 
-            style={{ width: "5%" }} 
-            onClick={() => removeEnrollment(e._id)}
-          > 
-            Unenroll 
-          </Button> 
-        }
-        { !e &&
-          <Button 
-            className="btn btn-success"
-            style={{ width: "5%" }} 
-            onClick={() => createEnrollmentForCourse(c._id)}
-          > 
-            Enroll
-          </Button> 
-        }
-      </ListGroup.Item>
-    );
-  }
-
   return (
     <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
+      <h1 id="wd-dashboard-title">
+        Dashboard
+        <button onClick={() => setEnrolling(!enrolling)} className="float-end btn btn-primary" >
+          {enrolling ? "My Courses" : "All Courses"}
+        </button>  
+      </h1> <hr />
       {/* Create course buttons - faculty only. */}
-      { currentUser.role === "FACULTY" &&
+      <FacultyOnlyOptions>
         <div>
           <h5>
             New Course
@@ -125,46 +58,7 @@ export default function Dashboard({ courses, fetchCourses, course, setCourse, ad
           <hr />
           <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
         </div>
-      }
-      {/* Enrollments button(s) - students only. */}
-      { currentUser.role === "STUDENT" &&
-        <>
-          <div className="d-flex justify-content-between">
-            <h5>Course Enrollment</h5>
-            <div>
-              { enrollmentMode === "disabled" && <span>Click to see all courses:</span> }
-              { enrollmentMode === "enroll" && <span>Click to see enrolled courses only:</span> }
-              { enrollmentMode === "unenroll" && <span>Click to hide:</span> }
-              <Button 
-                variant="primary"
-                className="ms-2"
-                onClick={() => {
-                  if (enrollmentMode === "disabled") {
-                    setEnrollmentMode("enroll");
-                  } else if (enrollmentMode === "enroll") {
-                    setEnrollmentMode("unenroll");
-                  } else {
-                    setEnrollmentMode("disabled");
-                  }
-                }}
-              >
-                Enrollments
-              </Button>
-            </div>
-          </div>
-          { enrollmentMode === "enroll" &&
-            <ListGroup className="my-2">
-              {allCourses.map((c) => buildCourseEnrollBar(c))}
-            </ListGroup>
-          }
-          { enrollmentMode === "unenroll" &&
-            <ListGroup className="my-2">
-              {courses.map((c) => buildCourseEnrollBar(c))}
-            </ListGroup>
-          }
-          <hr />
-        </>
-      }
+      </FacultyOnlyOptions>
       <div id="wd-dashboard-courses">
         <Row xs={1} md={5} className="g-4">
           {courses.map((course) => (
@@ -181,15 +75,28 @@ export default function Dashboard({ courses, fetchCourses, course, setCourse, ad
                     height={160} 
                   /> 
                   <Card.Body className="card-body">
+                    {/* Enrollment Button */}
+                    {enrolling && (
+                      <button onClick={(event) => {
+                        event.preventDefault();
+                        updateEnrollment(course._id, !course.enrolled);
+                      }}
+                        className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`} 
+                      >
+                        {course.enrolled ? "Unenroll" : "Enroll"}
+                      </button>
+                    )}
                     {/* Course name. */}
                     <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                      {course.name} </Card.Title>
+                      {course.name}
+                    </Card.Title>
                     {/* Course description. */}
                     <Card.Text className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                      {course.description} </Card.Text>
+                      {course.description}
+                    </Card.Text>
                     {/* Go to course button. */}
                     <Button variant="primary"> Go </Button>
-                    { currentUser.role === "FACULTY" &&
+                    <FacultyOnlyOptions>
                       <>
                         {/* Delete course button. */}
                         <button 
@@ -213,7 +120,7 @@ export default function Dashboard({ courses, fetchCourses, course, setCourse, ad
                           Edit
                         </button>
                       </>
-                    }
+                    </FacultyOnlyOptions>
                   </Card.Body>
                 </Link>
               </Card>
