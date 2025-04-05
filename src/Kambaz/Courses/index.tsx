@@ -4,14 +4,33 @@ import Home from "./Home";
 import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
 import PeopleTable from "./People/Table";
-import Pazza from "../../Pazza";
 import { Navigate, Route, Routes, useLocation, useParams } from "react-router";
 import { FaAlignJustify } from "react-icons/fa";
+import FacultyOnlyRoute from "../Account/FacultyOnlyRoute";
+import { useEffect, useState } from "react";
+
+import * as courseClient from "./client";
+import Pazza from "../../Pazza";
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
   const { pathname } = useLocation();
+  const [people, setPeople] = useState<any[]>([]);
+  const fetchCoursePeople = async () => {
+    try {
+      const users = await courseClient.findUsersForCourse(cid ? cid : "");
+      setPeople(users);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchCoursePeople();
+  }, []);
+
+
+
   return (
     <div id="wd-courses">
       <h2 className="text-danger">
@@ -31,10 +50,13 @@ export default function Courses({ courses }: { courses: any[]; }) {
             <Route path="Piazza" element={<Pazza />} />
             <Route path="Zoom" element={<h2>Zoom</h2>} />
             <Route path="Assignments" element={<Assignments />} />
-            <Route path="Assignments/:aid" element={<AssignmentEditor />} />
+            <Route 
+              path="Assignments/:aid" 
+              element={ <FacultyOnlyRoute fallback={"../Assignments"}> <AssignmentEditor /> </FacultyOnlyRoute> }
+            />
             <Route path="Quizzes" element={<h2>Quizzes</h2>} />
             <Route path="Grades" element={<h2>Grades</h2>} />
-            <Route path="People" element={<PeopleTable />} />
+            <Route path="People" element={<PeopleTable users={people} />} />
           </Routes>
         </div>
       </div>
