@@ -1,13 +1,60 @@
 import { Form, Button, Dropdown, Col, Row } from "react-bootstrap";
 import { useParams, Link } from "react-router-dom";
-import * as db from "../../Database";
+import { useDispatch, useSelector } from "react-redux";
+import { addAssignment, updateAssignment } from "./reducer";
+import { useState } from "react";
+
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
-  const assignment = db.assignments.find(a => String(a._id) === String(aid));
+  const dispatch = useDispatch();
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+
+  // Determine if this is a new or existing assignment.
+  let assignment;
+  if (aid === "new") {
+    assignment = {
+      title: "New Assignment",
+      description: "New assignment description.",
+      points: 100,
+      dueDate: new Date().toISOString().split("T")[0],
+      availableFrom: new Date().toISOString().split("T")[0],
+      availableUntil: new Date().toISOString().split("T")[0],
+      course: cid,
+    };
+  } else {
+    assignment = assignments.find((a: any) => String(a._id) === String(aid));
+  }
+  // Make sure the assignment gets updated by the form.
+  const [formData, setFormData] = useState(assignment);
+
+  const createAssignmentForCourse = async () => {
+    if (!cid) return;
+    console.log(assignment);
+    const a = await coursesClient.createAssignmentForCourse(cid, formData);
+    console.log(a);
+    dispatch(addAssignment(a));
+  };
+
+  const saveAssignment = async () => {
+    console.log(assignment);
+    await assignmentsClient.updateAssignment(formData);
+    dispatch(updateAssignment(assignment));
+  };
 
   // Check in case assignment is not found.
   if (!assignment) return <p className="text-secondary">Assignment not found.</p>;
+
+  // Function for saving a new assignment vs updating an existing one.
+  const handleSave = () => {
+    if (aid === "new") {
+      createAssignmentForCourse();
+    } else {
+      saveAssignment();
+    }
+  };
 
   return (
     <div style={{ width: "75%" }}>
@@ -20,6 +67,7 @@ export default function AssignmentEditor() {
             className="border"
             placeholder="Enter assignment name..."
             defaultValue={assignment.title}
+            onChange={(e) => setFormData({...formData, title: e.target.value})}
           />
         </Form.Group>
 
@@ -30,6 +78,7 @@ export default function AssignmentEditor() {
             className="border"
             rows={10}
             placeholder="Enter description..."
+            onChange={(e) => setFormData({...formData, description: e.target.value})}
           >
             {assignment.description}
           </Form.Control>
@@ -44,9 +93,9 @@ export default function AssignmentEditor() {
             style={{ maxWidth: '50%' }}
             placeholder="Enter points..."
             defaultValue={assignment.points}
+            onChange={(e) => setFormData({...formData, points: e.target.value})}
           />
         </Form.Group>
-
 
         {/* Assignment Group */}
         <Form.Group className="mt-3 d-flex justify-content-end align-items-center">
@@ -141,7 +190,8 @@ export default function AssignmentEditor() {
                 <Form.Control
                   type="date"
                   className="border"
-                  defaultValue={assignment.dueDate.split(' ')[0]}
+                  defaultValue={assignment.dueDate?.split("T")[0] || ""}
+                  onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
                 />
               </Col>
             </Row>
@@ -151,7 +201,8 @@ export default function AssignmentEditor() {
                 <Form.Control
                   type="date"
                   className="border"
-                  defaultValue={assignment.availableFrom.split(' ')[0]}
+                  defaultValue={assignment.availableFrom?.split("T")[0] || ""}
+                  onChange={(e) => setFormData({...formData, availableFrom: e.target.value})}
                 />
               </Col>
               <Col>
@@ -159,7 +210,8 @@ export default function AssignmentEditor() {
                 <Form.Control
                   type="date"
                   className="border"
-                  defaultValue={assignment.availableUntil.split(' ')[0]}
+                  defaultValue={assignment.availableUntil?.split("T")[0] || ""}
+                  onChange={(e) => setFormData({...formData, availableUntil: e.target.value})}
                 />
               </Col>
             </Row>
@@ -174,7 +226,7 @@ export default function AssignmentEditor() {
         <Link to={`/Kambaz/Courses/${cid}/Assignments`} className="text-decoration-none">
           <Button variant="secondary" size="lg" className="me-2">Cancel</Button>
         </Link>
-        <Link to={`/Kambaz/Courses/${cid}/Assignments`} className="text-decoration-none">
+        <Link to={`/Kambaz/Courses/${cid}/Assignments`} className="text-decoration-none" onClick={ handleSave }>
           <Button variant="danger" size="lg">Save</Button>
         </Link>
         </div>
