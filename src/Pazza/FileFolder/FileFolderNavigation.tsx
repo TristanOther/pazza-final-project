@@ -5,7 +5,6 @@ import { useState } from "react";
 export default function FileFolderNavigation() {
 
     const [selectedFolder, setSelectedFolder] = useState("");
-
     // Eventually this comes from backend
     const folders = [
         "Hw1",
@@ -23,9 +22,9 @@ export default function FileFolderNavigation() {
                 <div>
                     <FaFolder className="fs-5 ms-3" key={folder} />
                     <Button type="button" variant="link" style={{ textDecoration: "none", color: "black" }}
-                        onClick={() => setSelectedFolder(folder)}>
+                        onClick={() => setSelectedFolder(folder)}> 
                         {folder}
-                        <span className="ms-1 pazza-unread-post-box">0</span>
+                        <span className="ms-1 pazza-unread-post-box">0</span> {/* This is a placeholder until we get DB connections to the actual posts */}
                     </Button>
                 </div>
             ))}
