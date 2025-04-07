@@ -14,6 +14,7 @@ export default function FileFolderNavigation() {
         "Hw5",
         "Project1",
         "Project2",
+        "Office_Hours",
     ]
 
     return (
