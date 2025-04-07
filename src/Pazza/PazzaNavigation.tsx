@@ -9,6 +9,7 @@ export default function PazzaNavigation() {
   const userFirstLastName = currentUser ? currentUser.firstName + " " + currentUser.lastName : "Log In";
   const userName = currentUser ? currentUser.username : "Log In";
   const { pathname } = useLocation();
+  const homeLink = "/#" + pathname.split("Piazza").slice(0, 1).join("/") + "Piazza";
 
   const navbar_links = [
     { label: "Q & A", path: pathname + "/QnA", faculty_only: false },
@@ -19,7 +20,7 @@ export default function PazzaNavigation() {
 
   return (
     <div id="pazza-nav-bar" className="d-flex pazza-blue">
-      <a href="/Piazza" style={{ textDecoration: "none" }}>
+      <a href={homeLink} style={{ textDecoration: "none" }}>
         <text id="pazza-home-btn" className="me-5 pazza-blue">pazza</text>
       </a>
       <div className="d-flex justify-content-between align-items-center" style={{}}>
@@ -28,7 +29,7 @@ export default function PazzaNavigation() {
           .map((link) => (
           <a href={link.path} style={{ textDecoration: "none" }} >
             <span className={`text-white me-4 fw-bold
-                ${pathname.includes(`/Piazza/Profile/${userName}`) ? "text-decoration-underline" : ""}`}>{link.label}
+                ${pathname.includes(`/Piazza/Profile/${link.path}`) ? "text-decoration-underline" : ""}`}>{link.label}
             </span>
           </a>
         ))}
