@@ -12,10 +12,10 @@ export default function PazzaNavigation() {
   const homeLink = "/#" + pathname.split("Piazza").slice(0, 1).join("/") + "Piazza";
 
   const navbar_links = [
-    { label: "Q & A", path: pathname + "/QnA", faculty_only: false },
-    { label: "Resources", path: pathname + "/Resources", faculty_only: false },
-    { label: "Statistics", path: pathname + "/Statistics", faculty_only: false },
-    { label: "Manage Class", path: pathname + "/Manage", faculty_only: true },
+    { label: "Q & A", path: homeLink + "/QnA", faculty_only: false },
+    { label: "Resources", path: homeLink + "/Resources", faculty_only: false },
+    { label: "Statistics", path: homeLink + "/Statistics", faculty_only: false },
+    { label: "Manage Class", path: homeLink + "/Manage", faculty_only: true },
   ];
 
   return (
@@ -36,7 +36,7 @@ export default function PazzaNavigation() {
       </div>
       <div className="d-flex align-items-center ms-auto">
         <CiUser className="fs-2 bg-light"/>
-        <a href={`/Profile/${userName}`} style={{ textDecoration: "none" }}>
+        <a href={`${homeLink}/Profile/${userName}`} style={{ textDecoration: "none" }}>
           <span className={`ms-2 text-white bg-none fw-bold 
                 ${pathname.includes(`/Piazza/Profile/${userName}`) ? "text-decoration-underline" : ""}`}>{userFirstLastName}
           </span>
