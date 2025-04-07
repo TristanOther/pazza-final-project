@@ -29,3 +29,14 @@
     color: white;
     border: transparent;
 }
+
+.pazza-unread-post-box {
+    display: inline-block;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding-left: 1px;
+    padding-right: 1px;
+    color: white;
+    background-color: black;
+    font-size: 14px;
+}
