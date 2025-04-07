@@ -1,10 +1,13 @@
 import "./main_styling.css";
 import { useParams, useLocation } from "react-router";
 import { CiUser } from "react-icons/ci";
+import { useSelector } from "react-redux";
 
 export default function PazzaNavigation() {
   const { cid } = useParams();
-  const user = "Current User (TODO)"
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const userFirstLastName = currentUser ? currentUser.firstName + " " + currentUser.lastName : "Log In";
+  const userName = currentUser ? currentUser.username : "Log In";
   const { pathname } = useLocation();
 
   const navbar_links = [
@@ -24,16 +27,16 @@ export default function PazzaNavigation() {
         {navbar_links.map((link) => (
           <a href={link.path} style={{ textDecoration: "none" }} >
             <span className={`text-white me-4 fw-bold
-                ${pathname.includes(`/Piazza/Profile/${user}`) ? "text-decoration-underline" : ""}`}>{link.label}
+                ${pathname.includes(`/Piazza/Profile/${userName}`) ? "text-decoration-underline" : ""}`}>{link.label}
             </span>
           </a>
         ))}
       </div>
       <div className="d-flex align-items-center ms-auto">
         <CiUser className="fs-2 bg-light"/>
-        <a href={`/Profile/${user}`} style={{ textDecoration: "none" }}>
+        <a href={`/Profile/${userName}`} style={{ textDecoration: "none" }}>
           <span className={`ms-2 text-white bg-none fw-bold 
-                ${pathname.includes(`/Piazza/Profile/${user}`) ? "text-decoration-underline" : ""}`}>{user}
+                ${pathname.includes(`/Piazza/Profile/${userName}`) ? "text-decoration-underline" : ""}`}>{userFirstLastName}
           </span>
         </a>
       </div>
