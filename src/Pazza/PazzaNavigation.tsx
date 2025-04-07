@@ -11,10 +11,10 @@ export default function PazzaNavigation() {
   const { pathname } = useLocation();
 
   const navbar_links = [
-    { label: "Q & A", path: pathname + "/QnA" },
-    { label: "Resources", path: pathname + "/Resources" },
-    { label: "Statistics", path: pathname + "/Statistics" },
-    { label: "Manage Class", path: pathname + "/Manage" },
+    { label: "Q & A", path: pathname + "/QnA", faculty_only: false },
+    { label: "Resources", path: pathname + "/Resources", faculty_only: false },
+    { label: "Statistics", path: pathname + "/Statistics", faculty_only: false },
+    { label: "Manage Class", path: pathname + "/Manage", faculty_only: true },
   ];
 
   return (
@@ -24,7 +24,8 @@ export default function PazzaNavigation() {
       </a>
       <div className="d-flex justify-content-between align-items-center" style={{}}>
         <h5 className="text-white me-5 my-0"><strong>{cid}</strong></h5>
-        {navbar_links.map((link) => (
+        {navbar_links.filter((link) => !link.faculty_only || ((currentUser.role === "FACULTY") || (currentUser.role === "ADMIN")))
+          .map((link) => (
           <a href={link.path} style={{ textDecoration: "none" }} >
             <span className={`text-white me-4 fw-bold
                 ${pathname.includes(`/Piazza/Profile/${userName}`) ? "text-decoration-underline" : ""}`}>{link.label}
