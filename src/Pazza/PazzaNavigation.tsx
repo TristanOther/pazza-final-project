@@ -17,6 +17,7 @@ export default function PazzaNavigation() {
     { label: "Statistics", path: "Statistics", faculty_only: false },
     { label: "Manage Class", path: "Manage", faculty_only: true },
   ];
+  console.log(pathname.split("/Piazza").pop())
 
   return (
     <div id="pazza-nav-bar" className="d-flex pazza-blue">
@@ -29,7 +30,7 @@ export default function PazzaNavigation() {
           .map((link) => (
           <a href={homeLink + (link.path == "" ? "" : "/" + link.path)} style={{ textDecoration: "none" }} >
             <span className={`text-white me-4 fw-bold
-              ${pathname.split("/Piazza/").pop() === link.path ? "text-decoration-underline" : ""}`}>{link.label}
+              ${pathname.split("/Piazza").pop()?.replace("/", "") === link.path ? "text-decoration-underline" : ""}`}>{link.label}
             </span>
           </a>
         ))}
