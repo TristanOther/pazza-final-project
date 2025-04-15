@@ -1,27 +1,29 @@
 import PazzaNavigation from "./PazzaNavigation.tsx";
-import FileFolderNavigation from "./FileFolder/FileFolderNavigation.tsx";
-import ListOfPostsSidebar from "./ListOfPosts/ListOfPostsSidebar.tsx";
-import PostScreen from "./PostScreen/PostScreen.tsx";
+import ManageClass from "./ManageClass/ManageClassScreen.tsx";
+import Statistics from "./Statistics.tsx";
+import Resources from "./Resources.tsx";
+import PazzaProtectedRoute from "./PazzaProtectedRoute.tsx"; 
+import { Route, Routes } from "react-router-dom";
+import Posts from "./PostScreen/Posts.tsx";
 
 export default function Modules() {
-  return (
-    <div id="wd-pazza-q-and-a">
-        <div className="mx-3 my-3">
-            <div style={{ width: "100%" }}>
-                <PazzaNavigation />
-            </div>
-            <div style={{ width: "100%" }}>
-                <FileFolderNavigation/>
-            </div>
-            <div className="d-flex" style={{ width: "100%" }}>
-                <div className="flex-fill" style={{ width: "30%" }}>
-                    <ListOfPostsSidebar />
+    return (
+        <div id="wd-pazza-q-and-a">
+            <div className="mx-3 my-3">
+                <div style={{ width: "100%" }}>
+                    <PazzaNavigation />
                 </div>
-                <div className="flex-fill" style={{ width: "70%" }}>
-                    <PostScreen />
-                </div>
+                <Routes>
+                    <Route path="/*" element={<Posts />} />
+                    <Route path="/QnA" element={<Posts />} />
+                    <Route path="/Manage" element={
+                        <PazzaProtectedRoute>
+                            <ManageClass />
+                        </PazzaProtectedRoute>} />
+                    <Route path="Statistics" element={<Statistics />} />
+                    <Route path="Resources" element={<Resources />} />
+                </Routes>
             </div>
         </div>
-    </div>
-  );
+    );
 }
