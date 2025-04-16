@@ -12,11 +12,12 @@ export default function PazzaNavigation() {
   const homeLink = "/#" + pathname.split("Piazza").slice(0, 1).join("/") + "Piazza";
 
   const navbar_links = [
-    { label: "Q & A", path: homeLink + "/QnA", faculty_only: false },
-    { label: "Resources", path: homeLink + "/Resources", faculty_only: false },
-    { label: "Statistics", path: homeLink + "/Statistics", faculty_only: false },
-    { label: "Manage Class", path: homeLink + "/Manage", faculty_only: true },
+    { label: "Q & A", path: "", faculty_only: false },
+    { label: "Resources", path: "Resources", faculty_only: false },
+    { label: "Statistics", path: "Statistics", faculty_only: false },
+    { label: "Manage Class", path: "Manage", faculty_only: true },
   ];
+  console.log(pathname.split("/Piazza").pop())
 
   return (
     <div id="pazza-nav-bar" className="d-flex pazza-blue">
@@ -27,9 +28,9 @@ export default function PazzaNavigation() {
         <h5 className="text-white me-5 my-0"><strong>{cid}</strong></h5>
         {navbar_links.filter((link) => !link.faculty_only || ((currentUser.role === "FACULTY") || (currentUser.role === "ADMIN")))
           .map((link) => (
-          <a href={link.path} style={{ textDecoration: "none" }} >
+          <a href={homeLink + (link.path == "" ? "" : "/" + link.path)} style={{ textDecoration: "none" }} >
             <span className={`text-white me-4 fw-bold
-                ${pathname.includes(`/Piazza/Profile/${link.path}`) ? "text-decoration-underline" : ""}`}>{link.label}
+              ${pathname.split("/Piazza").pop()?.replace("/", "") === link.path ? "text-decoration-underline" : ""}`}>{link.label}
             </span>
           </a>
         ))}
