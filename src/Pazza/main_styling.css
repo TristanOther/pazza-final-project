@@ -3,6 +3,11 @@
     background-color: #2a70ae;
 }
 
+.pazza-light-blue {
+    background-color: lightblue;
+}
+
+
 /* The css for the main pazza nav bar */
 #pazza-nav-bar {
     padding: 15px;
