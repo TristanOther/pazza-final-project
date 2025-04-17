@@ -2,7 +2,7 @@ import PazzaNavigation from "./PazzaNavigation.tsx";
 import ManageClass from "./ManageClass/ManageClassScreen.tsx";
 import Statistics from "./Statistics.tsx";
 import Resources from "./Resources.tsx";
-import PazzaProtectedRoute from "./PazzaProtectedRoute.tsx"; 
+import PazzaProtectedRoute from "./PazzaProtectedRoute.tsx";
 import { Route, Routes } from "react-router-dom";
 import Posts from "./PostScreen/Posts.tsx";
 
@@ -15,7 +15,6 @@ export default function Pazza() {
                 </div>
                 <Routes>
                     <Route path="/*" element={<Posts />} />
-                    <Route path="/QnA" element={<Posts />} />
                     <Route path="/Manage" element={
                         <PazzaProtectedRoute>
                             <ManageClass />

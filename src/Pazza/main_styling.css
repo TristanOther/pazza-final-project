@@ -5,6 +5,16 @@
 .pazza-yellow-background { background-color: #fff9c4; }
 .pazza-grey-border  { border-color: #a9a9a9; }
 
+.pazza-light-blue {
+    background-color: lightblue;
+}
+
+.pazza-create-text {
+    color: #2d2e2e;
+    font-style: italic;
+    font-weight: initial;
+}
+
 /* The css for the main pazza nav bar */
 #pazza-nav-bar {
     padding: 15px;
