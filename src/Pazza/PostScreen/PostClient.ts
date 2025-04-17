@@ -9,6 +9,12 @@ export const fetchPosts = async (cid: string) => {
     return data;
 };
 
+export const getPost = async (pid: string) => {
+    const { data } = await axiosWithCredentials.get(`${POSTS_API}/${pid}`);
+    console.log(`${POSTS_API}/${pid}`);
+    return data;
+}
+
 export const createPost = async (post: any, cid: string) => {
     const { data } = await axiosWithCredentials.post(`${COURSES_API}/${cid}/posts`, post);
     return data;

@@ -6,10 +6,9 @@ import { useState } from "react";
 interface props {
     section?: string;
     posts?: any[];
-    markPostRead: (pid: string, uid: string) => void;
 }
 
-export default function PostGroup({ section, posts, markPostRead }: props) {
+export default function PostGroup({ section, posts }: props) {
     const { cid } = useParams();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [ minimized, setMinimized ] = useState<boolean>(false);
@@ -34,7 +33,6 @@ export default function PostGroup({ section, posts, markPostRead }: props) {
                 <div 
                     onClick={() => {
                         navigate(`/Kambaz/Courses/${cid}/Piazza/posts/${post._id}`);
-                        markPostRead(post._id, currentUser._id);
                     }}
                     style={{ 
                         border: "1px solid darkgray",

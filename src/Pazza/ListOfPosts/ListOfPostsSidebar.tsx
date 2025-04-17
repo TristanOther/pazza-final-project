@@ -3,7 +3,6 @@ import PostGroup from "./PostGroup";
 
 interface props {
     posts?: any[]; // ideally replace `any` with a proper type
-    markPostRead: (pid: string, uid: string) => void;
 }
 
 // This function groups posts by the date they were made, and gives them the appropriate key to then be used for the categories.
@@ -52,7 +51,7 @@ function groupPostsByDate(posts: any[]) {
     return groups;
 }
 
-export default function ListOfPostsSidebar({ posts, markPostRead }: props) {    
+export default function ListOfPostsSidebar({ posts }: props) {    
     if (!posts) posts = [];
     // Group posts by their creation date.
     const groupedPosts = groupPostsByDate(posts);
@@ -76,7 +75,7 @@ export default function ListOfPostsSidebar({ posts, markPostRead }: props) {
         <div style={{ width: "100%" }}>
             <ListOfPostsToolbar />
             {sortedKeys.map((key) => (
-                <PostGroup section={key} posts={groupedPosts[key]} markPostRead={markPostRead}/>
+                <PostGroup section={key} posts={groupedPosts[key]} />
             ))};
         </div>
     );
