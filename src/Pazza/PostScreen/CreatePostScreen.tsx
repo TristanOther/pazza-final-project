@@ -28,6 +28,7 @@ export default function CreatePostScreen() {
     const fetchUsersForCourse = async () => {
         const users = await client.findUsersForCourse(cid ? cid : "");
         const new_users = users.map((user: any) => ({ value: user._id, label: `${user.firstName} ${user.lastName} (${user.role})` }));
+        new_users.push({ value: -1, label: `All Instructors` });
         setUsers(new_users);
     };
     const updateSelectedFolders = (folder: string) => {
@@ -144,11 +145,10 @@ export default function CreatePostScreen() {
                     <div>
                         <span className="pazza-create-text me-3 ms-2" style={{ fontWeight: "bolder" }}>Enter 1 or more people</span>
                         <Select
-                            options={users}
+                            options={users.sort((a, b) => a.label.localeCompare(b.label))}
                             isMulti
                             onChange={(selectedOptions) => {
-                                setSelectedUsers(selectedOptions.map((option: any) => ({ name: option.label.split(" (")[0], id: option.value })));
-                                console.log(selectedUsers)
+                                setSelectedUsers(selectedOptions.map((option: any) => ({ name: option.label, id: option.value })));
                             }}
                         />
                     </div>
@@ -229,7 +229,7 @@ export default function CreatePostScreen() {
                             tags: selectedFolders,
                             content: quillInstance.current?.getSemanticHTML(),
                             createdBy: currentUser._id,
-                            viewableBy: selectedUsers.length != 0 ? selectedUsers.map((user: any) => user.id) : ["ALL"],
+                            viewableBy: selectedUsers.length != 0 ? selectedUsers.map((user: any) => user.id != -1 ? user._id : "INSTRUCTORS") : ["ALL"],
                         };
 
                         postClient.createPost(post, cid ? cid : "").then((res) => {
