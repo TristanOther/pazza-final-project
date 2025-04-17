@@ -226,6 +226,8 @@ export default function CreatePostScreen() {
 
                             //TODO: create the post in the DB and redirect to the new post
                             const post = {
+                                _id: -1, // to be given a UUID by the DB
+                                courseId: cid,
                                 postType: postType,
                                 postTo: postTo,
                                 summary: summary,
