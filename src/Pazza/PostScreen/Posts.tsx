@@ -22,14 +22,9 @@ export default function Posts() {
                 return setPosts([]);
             } else {
                 // filter out posts that are not visible to the current user
-                console.log("Posts: ", posts);
-                console.log("Current User: ", currentUser);
-
                 const filtered_posts = posts.filter((post: any) => {
                     return post.viewableBy.includes("ALL") || post.viewableBy.includes(currentUser._id + "") || (post.viewableBy.includes("INSTRUCTORS") && (currentUser.role === "FACULTY" || currentUser.role === "TA"));
                 });
-                console.log("Posts len: " + posts.length);
-                console.log("Filtered Posts len: " + filtered_posts.length);
                 filtered_posts.sort(
                     (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                 );
