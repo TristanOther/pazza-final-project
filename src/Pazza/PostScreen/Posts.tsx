@@ -3,9 +3,9 @@ import FileFolderNavigation from "../FileFolder/FileFolderNavigation"
 import ListOfPostsSidebar from "../ListOfPosts/ListOfPostsSidebar"
 import ClassAtAGlance from "./ClassAtAGlance";
 import PostScreen from "./PostScreen"
+import { useSelector } from "react-redux";
 import CreatePostScreen from "./CreatePostScreen";
 import { useEffect, useState } from "react";
-
 import * as postClient from './PostClient.ts';
 import { Button } from "react-bootstrap";
 
@@ -13,17 +13,22 @@ export default function Posts() {
     const { cid } = useParams();
     const [posts, setPosts] = useState<any[]>();
     const [showLops, setShowLops] = useState(true);
-    
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+
     const fetchPosts = async () => {
         try {
             const posts = await postClient.fetchPosts(cid as string);
             if (!posts) {
                 return setPosts([]);
             } else {
-                posts.sort(
+                // filter out posts that are not visible to the current user
+                const filtered_posts = posts.filter((post: any) => {
+                    return post.viewableBy.includes("ALL") || post.viewableBy.includes(currentUser._id + "") || (post.viewableBy.includes("INSTRUCTORS") && (currentUser.role === "FACULTY" || currentUser.role === "TA"));
+                });
+                filtered_posts.sort(
                     (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                 );
-                setPosts(posts);
+                setPosts(filtered_posts);
             }
         } catch (error) {
             console.error(error);
@@ -39,16 +44,16 @@ export default function Posts() {
         try {
             const postUpdates = {
                 _id: pid,
-                readBy: post.readBy.includes(uid) ? post.readBy: [ ...post.readBy, uid ],
-                viewedBy: post.viewedBy.includes(uid) ? post.viewedBy: [ ...post.viewedBy, uid ],
+                readBy: post.readBy.includes(uid) ? post.readBy : [...post.readBy, uid],
+                viewedBy: post.viewedBy.includes(uid) ? post.viewedBy : [...post.viewedBy, uid],
             };
             await postClient.updatePost(postUpdates);
             await fetchPosts();
-        } catch(err) {
+        } catch (err) {
             console.log(err);
         }
     }
-    
+
     return (
         <div className="pazza-grey-background">
             {/* File Folder Navigation Bar (FFNB) */}
@@ -63,8 +68,8 @@ export default function Posts() {
                     </div>
                 )}
                 {/* Minimize button for LOPS */}
-                <Button 
-                    variant="outline-secondary" 
+                <Button
+                    variant="outline-secondary"
                     style={{
                         width: "25px",
                         height: "25px",

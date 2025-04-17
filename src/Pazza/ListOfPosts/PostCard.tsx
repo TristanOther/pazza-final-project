@@ -16,6 +16,13 @@ function shortenText(text: string, length: number) {
   return `${text.substring(0, length)}${text.length > length ? '...' : ''}`;
 }
 
+// The rich text from the editor contains HTML tags. This strips those out for displaying the title on a post card.
+function humanReadable(text: string) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, "text/html");
+  return doc.body.textContent || "";
+}
+
 export default function PostCard({ id, title, content, createdAt, instructor, readBy }: props) {
   const location = useLocation();
   const pid = location.pathname.split("/").pop();
@@ -29,7 +36,7 @@ export default function PostCard({ id, title, content, createdAt, instructor, re
                     {instructor && <span className="me-1"><InstructorTag /></span>}
                     <span className="fw-semibold fs-6">{shortenText(title, 30)}</span >
                 </div>
-                <p className="mb-0 text-secondary">{shortenText(content, 140)}</p>
+                <p className="mb-0 text-secondary">{humanReadable(shortenText(content, 140))}</p>
             </div>
             <span className="text-muted ms-auto me-2 mt-1">{new Date(createdAt).toLocaleDateString()}</span>
         </div>
