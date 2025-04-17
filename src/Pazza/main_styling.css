@@ -7,6 +7,11 @@
     background-color: lightblue;
 }
 
+.pazza-create-text {
+    color: #2d2e2e;
+    font-style: italic;
+    font-weight: initial;
+}
 
 /* The css for the main pazza nav bar */
 #pazza-nav-bar {

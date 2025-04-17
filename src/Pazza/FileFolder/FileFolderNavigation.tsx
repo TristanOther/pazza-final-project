@@ -1,18 +1,15 @@
 import { Button } from "react-bootstrap";
 import { FaFolder } from "react-icons/fa";
-import { setSelectedFolder, setFolders } from "../reducer";
-import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState} from "react";
 
 export default function FileFolderNavigation() {
-    const dispatch = useDispatch();
-
-    const { folders } = useSelector((state: any) => state.foldersReducer);
+    let folders: string[] = [];
+    const [selectedFolder, setSelectedFolder] = useState("");
 
     useEffect(() => {
         const fetchFolders = async () => {
             // Simulate fetching folders from the DB until the dao does it
-            const fetchedFolders = [
+            folders = [
                 "Hw1",
                 "Hw2",
                 "Hw3",
@@ -22,11 +19,9 @@ export default function FileFolderNavigation() {
                 "Project2",
                 "Office_Hours"
             ];
-            dispatch(setFolders(fetchedFolders));
         fetchFolders();
         };
     }, []);
-    console.log("Folders in FileFolderNavigation:", folders);
 
     return (
         <div className="d-flex" style={{ width: "100%", background: "LightGrey" }}>
@@ -34,7 +29,7 @@ export default function FileFolderNavigation() {
                 <div>
                     <FaFolder className="fs-5 ms-3" key={folder} />
                     <Button type="button" variant="link" style={{ textDecoration: "none", color: "black" }}
-                        onClick={() => dispatch(setSelectedFolder(folder))}> 
+                        onClick={() => setSelectedFolder(folder)}> 
                         {folder}
                         <span className="ms-1 pazza-unread-post-box">0</span> {/* This is a placeholder until we get DB connections to the actual posts */}
                     </Button>
