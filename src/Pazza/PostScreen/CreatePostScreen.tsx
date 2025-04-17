@@ -91,10 +91,6 @@ export default function CreatePostScreen() {
         }
     }, []);
 
-
-    // Leaving this commented out, but this is how you would get the contents of the quill editor, from the Delta object returned by getContents()
-    // console.log(quillInstance.current.getContents());
-
     return (
         <div style={{ width: "100%" }}>
             <div className="d-flex ms-3 mt-2 mb-1" style={{ width: "100%" }}>
@@ -229,7 +225,7 @@ export default function CreatePostScreen() {
                             tags: selectedFolders,
                             content: quillInstance.current?.getSemanticHTML(),
                             createdBy: currentUser._id,
-                            viewableBy: selectedUsers.length != 0 ? selectedUsers.map((user: any) => user.id != -1 ? user._id : "INSTRUCTORS") : ["ALL"],
+                            viewableBy: selectedUsers.length != 0 ? selectedUsers.map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
                         };
 
                         postClient.createPost(post, cid ? cid : "").then((res) => {
