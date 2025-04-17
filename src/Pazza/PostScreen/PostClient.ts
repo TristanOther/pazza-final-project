@@ -11,7 +11,6 @@ export const fetchPosts = async (cid: string) => {
 
 export const getPost = async (pid: string) => {
     const { data } = await axiosWithCredentials.get(`${POSTS_API}/${pid}`);
-    console.log(`${POSTS_API}/${pid}`);
     return data;
 }
 
