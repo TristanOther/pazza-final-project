@@ -24,7 +24,14 @@ export default function PostScreen({ markPostRead }: {markPostRead: (pid: string
     }, [currentUser._id, markPostRead, postId]);
     
     return (
-        <div style={{ width: "100%", border: "1px solid darkGrey", borderRadius: "5px" }} className="mx-1 my-1">
+        <div 
+            className="pazza-white-background my-1 mx-1"
+            style={{
+                border: "1px solid darkGrey",
+                borderRadius: "5px",
+                boxSizing: "border-box",
+            }} 
+        >
             {/* Top bar */}
             <div
                 style={{
@@ -55,7 +62,7 @@ export default function PostScreen({ markPostRead }: {markPostRead: (pid: string
                     <span className="fs-5 me-1">{currentPost?.viewedBy?.length}</span> 
                     <span style={{ fontWeight: "bold" }}>views</span>
                 </div>
-                </div>
+            </div>
             {/* Post body */}
             <div className="px-3 py-3">
                 <h1>{currentPost.title}</h1>

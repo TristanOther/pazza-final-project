@@ -21,7 +21,7 @@ export default function PostCard({ id, title, content, createdAt, instructor, re
   const pid = location.pathname.split("/").pop();
 
   return (
-    <div className="border square" style={{ width: "100%", backgroundColor: (pid && pid === id) ? "#fff9c4" : "transparent" }}>
+    <div className={`border square ${(pid && pid === id) ? "pazza-yellow-background" : "pazza-white-background"}`} style={{ width: "100%" }}>
         <div className="d-flex">
             <div className="align-self-center mx-2"><UnreadIndicator unread={readBy} /></div>
             <div>
