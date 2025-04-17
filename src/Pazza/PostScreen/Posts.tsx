@@ -50,7 +50,7 @@ export default function Posts() {
     }
     
     return (
-        <div>
+        <div className="pazza-grey-background">
             {/* File Folder Navigation Bar (FFNB) */}
             <div style={{ width: "100%" }}>
                 <FileFolderNavigation />
