@@ -3,6 +3,16 @@
     background-color: #2a70ae;
 }
 
+/* The background color for the Pazza application */
+.pazza-background {
+    background-color: lightgray;
+}
+
+/* The dark accent background color for the Pazza application */
+.pazza-background-dark {
+    background-color: darkgray;
+}
+
 /* The css for the main pazza nav bar */
 #pazza-nav-bar {
     padding: 15px;
