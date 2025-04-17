@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Button } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router";
 import Select from 'react-select';
+import Quill from "quill";
+import "quill/dist/quill.snow.css";
 import * as client from "../../Kambaz/Courses/client";
-import { Jodit } from "jodit";
 
 export default function CreatePostScreen() {
     const options = [
@@ -11,13 +14,16 @@ export default function CreatePostScreen() {
     ];
 
     let folders: string[] = [];
-    const [postType, setPostType] = useState("textPost");
+    const [postType, setPostType] = useState("questionPost");
     const [postTo, setPostTo] = useState("");
     const [summary, setSummary] = useState("");
     const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
     const [users, setUsers] = useState<any[]>([]);
+    const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
+    const [validPost, setValidPost] = useState(false);
     const { cid } = useParams();
 
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     const fetchUsersForCourse = async () => {
         const users = await client.findUsersForCourse(cid ? cid : "");
         const new_users = users.map((user: any) => ({ value: user._id, label: `${user.firstName} ${user.lastName} (${user.role})` }));
@@ -26,10 +32,8 @@ export default function CreatePostScreen() {
     const updateSelectedFolders = (folder: string) => {
         setSelectedFolders((prevSelectedFolders) => {
             if (prevSelectedFolders.includes(folder)) {
-                console.log("removed!");
                 return prevSelectedFolders.filter((f) => f !== folder);
             } else {
-                console.log("added!");
                 return [...prevSelectedFolders, folder];
             }
         });
@@ -64,6 +68,30 @@ export default function CreatePostScreen() {
         "Project2",
         "Office_Hours"
     ];
+
+
+    // for the rich text editor, Quill
+    const quillRef = useRef<HTMLDivElement | null>(null);
+    const quillInstance = useRef<Quill | null>(null);
+    useEffect(() => {
+        if (quillRef.current && !quillRef.current.firstChild) {
+            quillInstance.current = new Quill(quillRef.current, {
+                modules: {
+                    toolbar: [
+                        [{ header: [1, 2, false] }],
+                        ['bold', 'italic', 'underline'],
+                        ['image', 'code-block'],
+                    ],
+                },
+                placeholder: 'Write your post here...',
+                theme: 'snow',
+            });
+        }
+    }, []);
+
+
+    // Leaving this commented out, but this is how you would get the contents of the quill editor, from the Delta object returned by getContents()
+    // console.log(quillInstance.current.getContents());
 
     return (
         <div style={{ width: "100%" }}>
@@ -111,16 +139,22 @@ export default function CreatePostScreen() {
                         </label>
                     </div>
                 </div>
-                <br />
                 {postTo == "INDV" && (
                     <div>
                         <span className="pazza-create-text me-3 ms-2" style={{ fontWeight: "bolder" }}>Enter 1 or more people</span>
-                        <Select options={users} isMulti />
+                        <Select
+                            options={users}
+                            isMulti
+                            onChange={(selectedOptions) => {
+                                setSelectedUsers(selectedOptions.map((option: any) => ({ name: option.label.split(" (")[0], id: option.value })));
+                                console.log(selectedUsers)
+                            }}
+                        />
                     </div>
                 )}
                 <br />
                 <div className="d-flex justify-content-left mb-1">
-                    <span className="ms-2 me-2 pazza-create-text" style={{ fontWeight: "bolder" }}>Select Folders</span>
+                    <span className="ms-2 me-2 pazza-create-text" style={{ fontWeight: "bolder" }}>Select Folder(s)* </span>
                     {folders.map((folder: string) =>
                         <button className={`me-2 border-0 ${selectedFolders.includes(folder) ? "bg-primary" : "bg-light"}`} style={{ borderRadius: "5px" }}
                             onClick={() => updateSelectedFolders(folder)}>
@@ -128,24 +162,94 @@ export default function CreatePostScreen() {
                         </button>
                     )}
                 </div>
-                <a className="me-2 ms-5 ps-5" href={"/#" + useLocation().pathname.split("/").slice(0, -2).join("/") + "/Manage"}>
-                    Manage and reorder folders
-                </a>
+                {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") &&
+                    <a className="me-2 ms-5 ps-5" href={"/#" + useLocation().pathname.split("/").slice(0, -2).join("/") + "/Manage"}>
+                        Manage and reorder folders
+                    </a>}
                 <br />
                 <br />
                 <span className="ms-2 me-2 pazza-create-text" style={{ fontWeight: "bolder" }}>Summary*</span>
-                <input className="ms-2" style={{ borderRadius: "3px", border: "2px", width: "35%" }} type="text" placeholder="Enter a one line summary less than 100 characters"
+                <input className="ms-2" style={{ borderRadius: "3px", border: "2px", width: "35%" }} type="text"
+                    placeholder="Enter a one line summary less than 100 characters"
                     onChange={(e) => setSummary(e.target.value)} maxLength={100} />
                 <br />
                 <br />
-                <span className="ms-3 me-5 pazza-create-text align-items-start" style={{ fontWeight: "bolder", verticalAlign: "top" }}>Details</span>
-                <textarea id="editor"></textarea>
-                <script>
-                    Jodit.make('#jodit-editor');
-                    {/* Jodit.make('#editor', {
-                        buttons: ['bold', 'italic', 'underline', '|', 'ul', 'ol']
-                    }); */}
-                </script>
+                <span className="ms-2 me-5 pazza-create-text align-items-start" style={{ fontWeight: "bolder", verticalAlign: "top" }}>
+                    Details
+                </span>
+                <div id="editor" style={{ height: "200px", backgroundColor: "white"}} ref={quillRef}></div>
+                {!validPost && (
+                    <div>
+                        {(selectedFolders.length == 0) && (
+                            <>
+                                <span className="text-danger">Please select at least one folder.</span>
+                                <br />
+                            </>
+                        )}
+                        {(postTo == "") && (
+                            <>
+                                <span className="text-danger">Please set the post's visibility.</span>
+                                <br />
+                            </>
+                        )}
+                        {(postTo == "INDV" && selectedUsers.length == 0) && (
+                            <>
+                                <span className="text-danger">Please provide at least one person to share the post with.</span>
+                                <br />
+                            </>
+                        )}
+                        {(summary.length == 0) && (
+                            <>
+                                <span className="text-danger">Please provide a summary.</span>
+                                <br />
+                            </>
+                        )}
+                        {(quillInstance.current?.getText() == "\n") && (
+                            <>
+                                <span className="text-danger">Please provide a post body.</span>
+                                <br />
+                            </>
+                        )}
+                    </div>
+                )}
+                <div className="mt-3 mb-3 d-flex justify-content-start" style={{ width: "100%" }}>
+                    <Button onClick={() => {
+                        setValidPost(summary.length != 0 && selectedFolders.length > 0 && postTo != "" && (postTo != "INDV" || selectedUsers.length > 0) && quillInstance.current?.getText() != "\n")
+                        if (validPost) {
+                            // set all states to default
+                            setValidPost(false);
+                            setPostType("questionPost");
+                            setPostTo("");
+                            setSummary("");
+                            setSelectedFolders([]);
+                            setSelectedUsers([]);
+
+                            //TODO: create the post in the DB and redirect to the new post
+                            const post = {
+                                postType: postType,
+                                postTo: postTo,
+                                summary: summary,
+                                folders: selectedFolders,
+                                users: selectedUsers.length != 0 ? selectedUsers.map((user: any) => user.id) : "ALL",
+                                body: quillInstance.current?.getSemanticHTML(),
+                            };
+                            console.log(post);
+                            window.location.href = window.location.href.split("/").slice(0, -2).join("/"); // TODO: needs to redirect to posts/id_of_this_new_post
+                        }
+                    }}>
+                        Create {postType === "questionPost" ? "Question" : "Note"}
+                    </Button>
+                    <Button className="ms-3" onClick={() => {
+                        // set all states to default
+                        setValidPost(false);
+                        setPostType("questionPost");
+                        setPostTo("");
+                        setSummary("");
+                        setSelectedFolders([]);
+                        setSelectedUsers([]);
+                        window.location.href = window.location.href.split("/").slice(0, -2).join("/");
+                    }}>Cancel</Button>
+                </div>
             </div>
         </div>
     );

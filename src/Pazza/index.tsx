@@ -15,7 +15,6 @@ export default function Modules() {
                 </div>
                 <Routes>
                     <Route path="/*" element={<Posts />} />
-                    <Route path="/QnA" element={<Posts />} />
                     <Route path="/Manage" element={
                         <PazzaProtectedRoute>
                             <ManageClass />
