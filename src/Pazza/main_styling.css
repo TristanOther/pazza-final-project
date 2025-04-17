@@ -3,6 +3,16 @@
     background-color: #2a70ae;
 }
 
+.pazza-light-blue {
+    background-color: lightblue;
+}
+
+.pazza-create-text {
+    color: #2d2e2e;
+    font-style: italic;
+    font-weight: initial;
+}
+
 /* The background color for the Pazza application */
 .pazza-background {
     background-color: lightgray;

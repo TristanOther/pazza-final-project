@@ -17,7 +17,6 @@ export default function PazzaNavigation() {
     { label: "Statistics", path: "Statistics", faculty_only: false },
     { label: "Manage Class", path: "Manage", faculty_only: true },
   ];
-  console.log(pathname.split("/Piazza").pop())
 
   return (
     <div id="pazza-nav-bar" className="d-flex pazza-blue">
