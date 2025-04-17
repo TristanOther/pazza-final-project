@@ -6,7 +6,7 @@ import PostScreen from "./PostScreen"
 import CreatePostScreen from "./CreatePostScreen";
 import { useEffect, useState } from "react";
 
-import * as postClient from './client.ts';
+import * as postClient from './PostClient.ts';
 import { Button } from "react-bootstrap";
 
 export default function Posts() {
@@ -14,30 +14,36 @@ export default function Posts() {
     const [posts, setPosts] = useState<any[]>();
     const [showLops, setShowLops] = useState(true);
     
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const posts = await postClient.fetchPosts(cid as string);
-                if (!posts) {
-                    return setPosts([]);
-                } else {
-                    posts.sort(
-                        (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                    );
-                    setPosts(posts);
-                }
-            } catch (error) {
-                console.error(error);
+    const fetchPosts = async () => {
+        try {
+            const posts = await postClient.fetchPosts(cid as string);
+            if (!posts) {
+                return setPosts([]);
+            } else {
+                posts.sort(
+                    (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
+                setPosts(posts);
             }
-        };
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    useEffect(() => {
         fetchPosts();
-    }, [cid, posts]);
+    }, [cid]);
 
     const markPostRead = async (pid: string, uid: string) => {
         const post = posts?.find((p) => p._id === pid);
-        if (!post || post.readBy.includes(uid)) return;
+        if (!post) return;
         try {
-            await postClient.updatePost({_id: pid, readBy: [ ...post.readBy, uid ]});
+            const postUpdates = {
+                _id: pid,
+                readBy: post.readBy.includes(uid) ? post.readBy: [ ...post.readBy, uid ],
+                viewedBy: post.viewedBy.includes(uid) ? post.viewedBy: [ ...post.viewedBy, uid ],
+            };
+            await postClient.updatePost(postUpdates);
+            await fetchPosts();
         } catch(err) {
             console.log(err);
         }
@@ -53,7 +59,7 @@ export default function Posts() {
                 {/* List of Posts Sidebar (LOPS) */}
                 {showLops && (
                     <div className="flex-fill" style={{ width: "30%" }}>
-                        <ListOfPostsSidebar posts={posts} markPostRead={markPostRead} />
+                        <ListOfPostsSidebar posts={posts} />
                     </div>
                 )}
                 {/* Minimize button for LOPS */}
@@ -78,7 +84,7 @@ export default function Posts() {
                         <Route index element={<ClassAtAGlance />} />
                         <Route path="/" element={<ClassAtAGlance />} />
                         <Route path="/posts/create" element={<CreatePostScreen />} />
-                        <Route path="/posts/:postId" element={<PostScreen />} />
+                        <Route path="/posts/:postId" element={<PostScreen markPostRead={markPostRead} />} />
                     </Routes>
                 </div>
             </div>

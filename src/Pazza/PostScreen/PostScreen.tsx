@@ -1,7 +1,71 @@
-export default function PostScreen() {
+import { useParams } from "react-router-dom";
+
+import * as postClient from './PostClient.ts';
+import { useEffect, useState } from "react";
+import { BsQuestionSquareFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
+
+export default function PostScreen({ markPostRead }: {markPostRead: (pid: string, uid: string) => void}) {
+    const { postId } = useParams();
+    const [ currentPost, setCurrentPost ] = useState<any>({});
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+    
+    useEffect(() => {
+        const fetchPost = async () => {
+            try {
+                const post = await postClient.getPost(postId as string);
+                setCurrentPost(post);
+            } catch(err) {
+                console.log(err);
+            }
+        }
+        fetchPost();
+        if (postId) markPostRead(postId, currentUser._id);
+    }, [currentUser._id, markPostRead, postId]);
+    
     return (
-        <div style={{ width: "100%", background: "Pink" }}>
-            Post screen.
+        <div style={{ width: "100%", border: "1px solid darkGrey", borderRadius: "5px" }} className="mx-1 my-1">
+            {/* Top bar */}
+            <div
+                style={{
+                    width: "100%",
+                    borderBottom: "1px solid darkGrey",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                }}
+                className="p-1"
+            >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <BsQuestionSquareFill className="fs-2" />
+                    <span className="fw-bold ms-2">question @{postId}</span>
+                </div>
+                <div
+                    style={{
+                    borderRadius: "5px",
+                    backgroundColor: "#333333",
+                    color: "white",
+                    padding: "2px 10px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    whiteSpace: "nowrap",
+                    }}
+                >
+                    <span className="fs-5 me-1">{currentPost?.viewedBy?.length}</span> 
+                    <span style={{ fontWeight: "bold" }}>views</span>
+                </div>
+                </div>
+            {/* Post body */}
+            <div className="px-3 py-3">
+                <h1>{currentPost.title}</h1>
+                <span>{currentPost.content}</span>
+            </div>
+            {/* TODO: map tags here */}
+            {/* TODO: Bottom bar/edit */}
+            {/* TODO: student answer section component goes here */}
+            {/* TODO: instructor answer section component goes here */}
+            {/* TODO: followup discussion section component goes here */}
         </div>
     );
 }
