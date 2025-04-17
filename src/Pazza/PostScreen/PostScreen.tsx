@@ -4,33 +4,34 @@ import * as postClient from './PostClient.ts';
 import { useEffect, useState } from "react";
 import { BsQuestionSquareFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
+import DOMPurify from 'dompurify';
 
-export default function PostScreen({ markPostRead }: {markPostRead: (pid: string, uid: string) => void}) {
+export default function PostScreen({ markPostRead }: { markPostRead: (pid: string, uid: string) => void }) {
     const { postId } = useParams();
-    const [ currentPost, setCurrentPost ] = useState<any>({});
+    const [currentPost, setCurrentPost] = useState<any>({});
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-    
+
     useEffect(() => {
         const fetchPost = async () => {
             try {
                 const post = await postClient.getPost(postId as string);
                 setCurrentPost(post);
-            } catch(err) {
+            } catch (err) {
                 console.log(err);
             }
         }
         fetchPost();
         if (postId) markPostRead(postId, currentUser._id);
     }, [currentUser._id, markPostRead, postId]);
-    
+
     return (
-        <div 
+        <div
             className="pazza-white-background my-1 mx-1"
             style={{
                 border: "1px solid darkGrey",
                 borderRadius: "5px",
                 boxSizing: "border-box",
-            }} 
+            }}
         >
             {/* Top bar */}
             <div
@@ -49,24 +50,24 @@ export default function PostScreen({ markPostRead }: {markPostRead: (pid: string
                 </div>
                 <div
                     style={{
-                    borderRadius: "5px",
-                    backgroundColor: "#333333",
-                    color: "white",
-                    padding: "2px 10px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    whiteSpace: "nowrap",
+                        borderRadius: "5px",
+                        backgroundColor: "#333333",
+                        color: "white",
+                        padding: "2px 10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        whiteSpace: "nowrap",
                     }}
                 >
-                    <span className="fs-5 me-1">{currentPost?.viewedBy?.length}</span> 
+                    <span className="fs-5 me-1">{currentPost?.viewedBy?.length}</span>
                     <span style={{ fontWeight: "bold" }}>views</span>
                 </div>
             </div>
             {/* Post body */}
             <div className="px-3 py-3">
                 <h1>{currentPost.title}</h1>
-                <span>{currentPost.content}</span>
+                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentPost.content) }} />
             </div>
             {/* TODO: map tags here */}
             {/* TODO: Bottom bar/edit */}

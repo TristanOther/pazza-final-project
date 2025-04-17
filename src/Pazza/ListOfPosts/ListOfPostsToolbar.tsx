@@ -13,7 +13,7 @@ export default function PostToolbar() {
     >
         {/* New post button */}
         <div
-            className="pazza-blue-background text-white px-3 py-2 rounded"
+            className="pazza-blue-background text-white px-3 py-2 rounded text-nowrap"
             style={{ cursor: "pointer" }}
             onClick={() => navigate(`/Kambaz/Courses/${cid}/Piazza/posts/create`)}
         >
