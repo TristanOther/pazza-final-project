@@ -6,7 +6,7 @@ import PazzaProtectedRoute from "./PazzaProtectedRoute.tsx";
 import { Route, Routes } from "react-router-dom";
 import Posts from "./PostScreen/Posts.tsx";
 
-export default function Modules() {
+export default function Pazza() {
     return (
         <div id="wd-pazza-q-and-a">
             <div className="mx-3 my-3">
