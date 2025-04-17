@@ -13,7 +13,7 @@ export default function PostToolbar() {
     >
         {/* New post button */}
         <div
-            className="pazza-blue text-white px-3 py-2 rounded"
+            className="pazza-blue-background text-white px-3 py-2 rounded"
             style={{ cursor: "pointer" }}
             onClick={() => navigate(`/Kambaz/Courses/${cid}/Piazza/posts/create`)}
         >
@@ -26,7 +26,7 @@ export default function PostToolbar() {
             </InputGroup.Text>
             <Form.Control
             placeholder="Search or add a post..."
-            style={{ backgroundColor: "#f5f5f5" }}
+            className="pazza-white"
             />
         </InputGroup>      
     </div>

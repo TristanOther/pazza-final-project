@@ -1,7 +1,9 @@
-/* The blue color for the Pazza application */
-.pazza-blue {
-    background-color: #2a70ae;
-}
+.pazza-blue-background { background-color: #3a73a1; }
+.pazza-grey-background  { background-color: #f0f0f5; }
+.pazza-dark-grey-background  { background-color: #dbdbdb; }
+.pazza-white-background  { background-color: #ffffff; }
+.pazza-yellow-background { background-color: #fff9c4; }
+.pazza-grey-border  { border-color: #a9a9a9; }
 
 .pazza-light-blue {
     background-color: lightblue;
@@ -11,16 +13,6 @@
     color: #2d2e2e;
     font-style: italic;
     font-weight: initial;
-}
-
-/* The background color for the Pazza application */
-.pazza-background {
-    background-color: lightgray;
-}
-
-/* The dark accent background color for the Pazza application */
-.pazza-background-dark {
-    background-color: darkgray;
 }
 
 /* The css for the main pazza nav bar */

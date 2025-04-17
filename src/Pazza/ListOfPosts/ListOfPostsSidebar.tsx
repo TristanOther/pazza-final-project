@@ -76,7 +76,7 @@ export default function ListOfPostsSidebar({ posts }: props) {
             <ListOfPostsToolbar />
             {sortedKeys.map((key) => (
                 <PostGroup section={key} posts={groupedPosts[key]} />
-            ))};
+            ))}
         </div>
     );
 }

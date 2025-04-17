@@ -19,9 +19,9 @@ export default function PazzaNavigation() {
   ];
 
   return (
-    <div id="pazza-nav-bar" className="d-flex pazza-blue">
+    <div id="pazza-nav-bar" className="d-flex pazza-blue-background">
       <a href={homeLink} style={{ textDecoration: "none" }}>
-        <text id="pazza-home-btn" className="me-5 pazza-blue">pazza</text>
+        <text id="pazza-home-btn" className="me-5 pazza-blue-background">pazza</text>
       </a>
       <div className="d-flex justify-content-between align-items-center" style={{}}>
         <h5 className="text-white me-5 my-0"><strong>{cid}</strong></h5>

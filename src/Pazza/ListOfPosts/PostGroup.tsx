@@ -18,12 +18,11 @@ export default function PostGroup({ section, posts }: props) {
         <div style={{ width: "100%" }}>
             <div 
                 onClick={() => setMinimized(!minimized)}
-                className="pazza-background" 
+                className="pazza-dark-grey-background pazza-grey-border" 
                 style={{ 
-                    border: "1px solid darkgray",
-                    borderTop: "none",
+                    borderWidth: "1px",
+                    borderStyle: "solid",
                     boxShadow: "none",
-                    boxSizing: "border-box",
                     overflow: "hidden",
                 }}
             >
@@ -34,11 +33,12 @@ export default function PostGroup({ section, posts }: props) {
                     onClick={() => {
                         navigate(`/Kambaz/Courses/${cid}/Piazza/posts/${post._id}`);
                     }}
+                    className="pazza-grey-border"
                     style={{ 
-                        border: "1px solid darkgray",
+                        borderWidth: "1px",
+                        borderStyle: "solid",
                         borderTop: "none",
                         boxShadow: "none",
-                        boxSizing: "border-box",
                         overflow: "hidden",
                         cursor: "pointer",
                     }}
