@@ -6,6 +6,7 @@ import Select from 'react-select';
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import * as client from "../../Kambaz/Courses/client";
+import * as postClient from "./PostClient"
 
 export default function CreatePostScreen() {
     const options = [
@@ -177,45 +178,61 @@ export default function CreatePostScreen() {
                 <span className="ms-2 me-5 pazza-create-text align-items-start" style={{ fontWeight: "bolder", verticalAlign: "top" }}>
                     Details
                 </span>
-                <div id="editor" style={{ height: "200px", backgroundColor: "white"}} ref={quillRef}></div>
-                {!validPost && (
-                    <div>
-                        {(selectedFolders.length == 0) && (
-                            <>
-                                <span className="text-danger">Please select at least one folder.</span>
-                                <br />
-                            </>
-                        )}
-                        {(postTo == "") && (
-                            <>
-                                <span className="text-danger">Please set the post's visibility.</span>
-                                <br />
-                            </>
-                        )}
-                        {(postTo == "INDV" && selectedUsers.length == 0) && (
-                            <>
-                                <span className="text-danger">Please provide at least one person to share the post with.</span>
-                                <br />
-                            </>
-                        )}
-                        {(summary.length == 0) && (
-                            <>
-                                <span className="text-danger">Please provide a summary.</span>
-                                <br />
-                            </>
-                        )}
-                        {(quillInstance.current?.getText() == "\n") && (
-                            <>
-                                <span className="text-danger">Please provide a post body.</span>
-                                <br />
-                            </>
-                        )}
-                    </div>
-                )}
-                <div className="mt-3 mb-3 d-flex justify-content-start" style={{ width: "100%" }}>
-                    <Button onClick={() => {
-                        setValidPost(summary.length != 0 && selectedFolders.length > 0 && postTo != "" && (postTo != "INDV" || selectedUsers.length > 0) && quillInstance.current?.getText() != "\n")
-                        if (validPost) {
+            </div>
+
+            <div id="editor" style={{ height: "200px", backgroundColor: "white" }} ref={quillRef}></div>
+            {!validPost && (
+                <div>
+                    {(selectedFolders.length == 0) && (
+                        <>
+                            <span className="text-danger">Please select at least one folder.</span>
+                            <br />
+                        </>
+                    )}
+                    {(postTo == "") && (
+                        <>
+                            <span className="text-danger">Please set the post's visibility.</span>
+                            <br />
+                        </>
+                    )}
+                    {(postTo == "INDV" && selectedUsers.length == 0) && (
+                        <>
+                            <span className="text-danger">Please provide at least one person to share the post with.</span>
+                            <br />
+                        </>
+                    )}
+                    {(summary.length == 0) && (
+                        <>
+                            <span className="text-danger">Please provide a summary.</span>
+                            <br />
+                        </>
+                    )}
+                    {(quillInstance.current?.getText() == "\n") && (
+                        <>
+                            <span className="text-danger">Please provide a post body.</span>
+                            <br />
+                        </>
+                    )}
+                </div>
+            )}
+            <div className="mt-3 mb-3 d-flex justify-content-start" style={{ width: "100%" }}>
+                <Button onClick={() => {
+                    setValidPost(summary.length != 0 && selectedFolders.length > 0 && postTo != "" && (postTo != "INDV" || selectedUsers.length > 0) && quillInstance.current?.getText() != "\n")
+                    if (validPost) {
+                        // add the current user to the list of users if the post is not to the entire class
+                        if (postTo != "ALL") {
+                            selectedUsers.push({ name: currentUser.firstName + " " + currentUser.lastName, id: currentUser._id });
+                        }
+                        const post = {
+                            postType: postType,
+                            title: summary,
+                            tags: selectedFolders,
+                            content: quillInstance.current?.getSemanticHTML(),
+                            createdBy: currentUser._id,
+                            viewableBy: selectedUsers.length != 0 ? selectedUsers.map((user: any) => user.id) : ["ALL"],
+                        };
+
+                        postClient.createPost(post, cid ? cid : "").then((res) => {
                             // set all states to default
                             setValidPost(false);
                             setPostType("questionPost");
@@ -223,35 +240,33 @@ export default function CreatePostScreen() {
                             setSummary("");
                             setSelectedFolders([]);
                             setSelectedUsers([]);
+                            quillInstance.current?.setText("");
 
-                            //TODO: create the post in the DB and redirect to the new post
-                            const post = {
-                                _id: -1, // to be given a UUID by the DB
-                                courseId: cid,
-                                postType: postType,
-                                postTo: postTo,
-                                summary: summary,
-                                folders: selectedFolders,
-                                users: selectedUsers.length != 0 ? selectedUsers.map((user: any) => user.id) : "ALL",
-                                body: quillInstance.current?.getSemanticHTML(),
-                            };
-                            console.log(post);
-                            window.location.href = window.location.href.split("/").slice(0, -2).join("/"); // TODO: needs to redirect to posts/id_of_this_new_post
-                        }
-                    }}>
-                        Create {postType === "questionPost" ? "Question" : "Note"}
-                    </Button>
-                    <Button className="ms-3" onClick={() => {
-                        // set all states to default
-                        setValidPost(false);
-                        setPostType("questionPost");
-                        setPostTo("");
-                        setSummary("");
-                        setSelectedFolders([]);
-                        setSelectedUsers([]);
-                        window.location.href = window.location.href.split("/").slice(0, -2).join("/");
-                    }}>Cancel</Button>
-                </div>
+                            // redirect to the new post
+                            var post_redirect = window.location.href.split("/").slice(0, -1);
+                            post_redirect.push(res._id + "");
+                            window.location.href = post_redirect.join("/");
+                        }).catch((err) => {
+                            // if post fails, redirect to default post screen
+                            console.error(err);
+                            window.location.href = window.location.href.split("/").slice(0, -2).join("/");
+                        });
+                    }
+                }}>
+                    Create {postType === "questionPost" ? "Question" : "Note"}
+                </Button>
+                <Button className="ms-3" onClick={() => {
+                    // set all states to default
+                    setValidPost(false);
+                    setPostType("questionPost");
+                    setPostTo("");
+                    setSummary("");
+                    setSelectedFolders([]);
+                    setSelectedUsers([]);
+                    quillInstance.current?.setText("");
+
+                    window.location.href = window.location.href.split("/").slice(0, -2).join("/");
+                }}>Cancel</Button>
             </div>
         </div>
     );
