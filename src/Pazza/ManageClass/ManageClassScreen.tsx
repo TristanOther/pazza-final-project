@@ -16,7 +16,7 @@ export default function ManageClass() {
 
 
     return (
-        <div className="d-flex pazza-grey-background" style={{ width: "100%" }}>
+        <div className="d-flex pazza-grey-background justify-content-between pe-5 ps-5" style={{ width: "100%" }}>
             {tabs.map((tab: any) => (
                 <div>
                     <Button className="text-nowrap" type="button" variant="link" style={{ textDecoration: "none", color: "black" }} 
