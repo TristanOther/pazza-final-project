@@ -18,6 +18,7 @@ export default function PazzaNavigation() {
     { label: "Manage Class", path: "Manage", faculty_only: true },
   ];
 
+  console.log("Back part: ", pathname.split("/Piazza")[1]);
   return (
     <div id="pazza-nav-bar" className="d-flex pazza-blue-background">
       <a href={homeLink} style={{ textDecoration: "none" }}>
@@ -27,15 +28,17 @@ export default function PazzaNavigation() {
         <h5 className="text-white me-5 my-0"><strong>{cid}</strong></h5>
         {navbar_links.filter((link) => !link.faculty_only || ((currentUser.role === "FACULTY") || (currentUser.role === "ADMIN")))
           .map((link) => (
-          <a href={homeLink + (link.path == "" ? "" : "/" + link.path)} style={{ textDecoration: "none" }} >
-            <span className={`text-white me-4 fw-bold
-              ${pathname.split("/Piazza").pop()?.replace("/", "") === link.path ? "text-decoration-underline" : ""}`}>{link.label}
-            </span>
-          </a>
-        ))}
+            <a href={homeLink + (link.path == "" ? "" : "/" + link.path)} style={{ textDecoration: "none" }} >
+              <span className={`text-white me-4 fw-bold
+              ${((pathname.split("/Piazza")[1] === "" && link.path === "") ||
+                  pathname.split("/Piazza")[1].includes(link.path) && link.path != "")
+                  ? "text-decoration-underline" : ""}`}>{link.label}
+              </span>
+            </a>
+          ))}
       </div>
       <div className="d-flex align-items-center ms-auto">
-        <CiUser className="fs-2 bg-light"/>
+        <CiUser className="fs-2 bg-light" />
         <a href={`${homeLink}/Profile/${userName}`} style={{ textDecoration: "none" }}>
           <span className={`ms-2 text-white bg-none fw-bold 
                 ${pathname.includes(`/Piazza/Profile/${userName}`) ? "text-decoration-underline" : ""}`}>{userFirstLastName}
