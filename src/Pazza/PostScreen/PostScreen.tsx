@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 
 import * as postClient from './PostClient.ts';
+import * as userClient from '../../Kambaz/Account/client.ts';
 import { useEffect, useState } from "react";
 import { BsQuestionSquareFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
@@ -9,6 +10,7 @@ import DOMPurify from 'dompurify';
 export default function PostScreen({ markPostRead }: { markPostRead: (pid: string, uid: string) => void }) {
     const { postId } = useParams();
     const [currentPost, setCurrentPost] = useState<any>({});
+    const [postCreator, setPostCreator] = useState<any>({});
     const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     useEffect(() => {
@@ -16,6 +18,8 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
             try {
                 const post = await postClient.getPost(postId as string);
                 setCurrentPost(post);
+                const creator = await userClient.findUserById(post.createdBy);
+                setPostCreator(creator);
             } catch (err) {
                 console.log(err);
             }
@@ -69,8 +73,28 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
                 <h1>{currentPost.title}</h1>
                 <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentPost.content) }} />
             </div>
-            {/* TODO: map tags here */}
-            {/* TODO: Bottom bar/edit */}
+            {/* Post tags */}
+            {/* TODO */}
+            {/* Bottom bar */}
+            <div
+                style={{
+                    width: "100%",
+                    borderTop: "1px solid darkGrey",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                }}
+                className="pazza-dark-grey-background px-3 py-1"
+            >
+                <div
+                    className="pazza-blue-background text-white px-3 py-2 rounded text-nowrap"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => null}
+                >
+                    Edit
+                </div>
+                <span>posted by {postCreator.username}</span>
+            </div>
             {/* TODO: student answer section component goes here */}
             {/* TODO: instructor answer section component goes here */}
             {/* TODO: followup discussion section component goes here */}

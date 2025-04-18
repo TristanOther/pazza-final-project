@@ -8,7 +8,7 @@ export default function PostToolbar() {
 
   return (
     <div
-      className="pazza-background-dark d-flex justify-content-between align-items-center p-2"
+      className="pazza-darker-grey-background d-flex justify-content-between align-items-center p-2"
       style={{ width: "100%" }}
     >
         {/* New post button */}
