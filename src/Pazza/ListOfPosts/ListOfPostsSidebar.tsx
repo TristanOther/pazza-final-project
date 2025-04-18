@@ -1,5 +1,6 @@
 import ListOfPostsToolbar from "./ListOfPostsToolbar";
 import PostGroup from "./PostGroup";
+import { useState } from "react";
 
 interface props {
     posts?: any[]; // ideally replace `any` with a proper type
@@ -53,8 +54,22 @@ function groupPostsByDate(posts: any[]) {
 
 export default function ListOfPostsSidebar({ posts }: props) {    
     if (!posts) posts = [];
+    
+    const [searchTerm, setSearchTerm] = useState<string>("");
+
+    // Filter posts based on the search term.
+    const filteredPosts = posts.filter((post) => {
+        // Check if the post has a title and content before accessing them.
+        if (!post.title || !post.content) return false;
+
+        const title = post.title.toLowerCase();
+        const body = post.content.toLowerCase();
+        const search = searchTerm.toLowerCase();
+        return title.includes(search) || body.includes(search);
+    });
+
     // Group posts by their creation date.
-    const groupedPosts = groupPostsByDate(posts);
+    const groupedPosts = groupPostsByDate(filteredPosts);
     // Sort the keyed groups in reverse chronological order so they can be displayed.
     const sortedKeys = Object.keys(groupedPosts).sort((a, b) => {
         const labelWeight = (label: string): number => {
@@ -73,7 +88,7 @@ export default function ListOfPostsSidebar({ posts }: props) {
 
     return (
         <div style={{ width: "100%" }}>
-            <ListOfPostsToolbar />
+            <ListOfPostsToolbar setSearchTerm={setSearchTerm} />
             {sortedKeys.map((key) => (
                 <PostGroup section={key} posts={groupedPosts[key]} />
             ))}

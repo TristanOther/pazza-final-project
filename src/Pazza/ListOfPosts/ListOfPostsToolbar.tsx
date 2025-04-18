@@ -2,7 +2,7 @@ import { Form, InputGroup } from "react-bootstrap";
 import { CiSearch } from "react-icons/ci";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function PostToolbar() {
+export default function PostToolbar({ setSearchTerm }: any) {
     const { cid } = useParams();
     const navigate = useNavigate();
 
@@ -27,6 +27,7 @@ export default function PostToolbar() {
             <Form.Control
             placeholder="Search or add a post..."
             className="pazza-white"
+            onChange={(e) => setSearchTerm(e.target.value)}
             />
         </InputGroup>      
     </div>
