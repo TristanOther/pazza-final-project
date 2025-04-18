@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 const initialState = {
   tags: [],
+  selectedTag: String,
 };
 const tagsSlice = createSlice({
   name: "tags",
@@ -9,6 +10,9 @@ const tagsSlice = createSlice({
   reducers: {
     setTags: (state, action) => {
       state.tags = action.payload;
+    },
+    setSelectedTag: (state, action) => {
+      state.selectedTag = action.payload;
     },
     addTag: (state, { payload: tag }) => {
       const newAssignment: any = { 
@@ -18,7 +22,6 @@ const tagsSlice = createSlice({
         priority: tag.priority,
       };
       state.tags = [...state.tags, newAssignment] as any;
-      // DB add tag
     },
     removeTag: (state, { payload: tagId }) => {
       state.tags = state.tags.filter((t: any) => t._id !== tagId);
@@ -30,5 +33,5 @@ const tagsSlice = createSlice({
     },
   },
 });
-export const { setTags, addTag, removeTag, updateTag } = tagsSlice.actions;
+export const { setTags, setSelectedTag, addTag, removeTag, updateTag } = tagsSlice.actions;
 export default tagsSlice.reducer;
