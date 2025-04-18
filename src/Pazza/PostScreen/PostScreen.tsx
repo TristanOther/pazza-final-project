@@ -9,9 +9,24 @@ import DOMPurify from 'dompurify';
 
 export default function PostScreen({ markPostRead }: { markPostRead: (pid: string, uid: string) => void }) {
     const { postId } = useParams();
+    const { tags } = useSelector((state: any) => state.tagsReducer);
     const [currentPost, setCurrentPost] = useState<any>({});
     const [postCreator, setPostCreator] = useState<any>({});
     const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const [postTags, setPostTags] = useState<any>([]);
+
+    useEffect(() => {
+        const fetchTags = async() => {
+            try {
+                const postTags = tags.filter((t: any) => currentPost.tags.includes(t._id));
+                console.log(postTags);
+                setPostTags(postTags);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        fetchTags();
+    }, [tags, currentPost.tags]);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -74,7 +89,25 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
                 <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentPost.content) }} />
             </div>
             {/* Post tags */}
-            {/* TODO */}
+            <div className="m-3" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {postTags.map((t: any) => {
+                    return (
+                        <div
+                            key={t._id}
+                            className="pazza-light-blue pazza-blue-text"
+                            style={{
+                                padding: "4px 10px",
+                                borderRadius: "20px",
+                                fontSize: "0.9rem",
+                                fontWeight: "500",
+                                whiteSpace: "nowrap",
+                            }}
+                        >
+                            {t.name}
+                        </div>
+                    );
+                })}
+            </div>
             {/* Bottom bar */}
             <div
                 style={{

@@ -4,7 +4,10 @@
 .pazza-darker-grey-background { background-color: #999999; }
 .pazza-white-background  { background-color: #ffffff; }
 .pazza-yellow-background { background-color: #fff9c4; }
-.pazza-grey-border  { border-color: #a9a9a9; }
+
+.pazza-grey-border { border-color: #a9a9a9; }
+
+.pazza-blue-text { color: #3a73a1; }
 
 .pazza-light-blue {
     background-color: lightblue;
