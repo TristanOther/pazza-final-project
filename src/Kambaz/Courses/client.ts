@@ -46,7 +46,7 @@ export const createAssignmentForCourse = async (courseId: string, assignment: an
   return response.data;
 };
 
-export const findEnrollmentssForCourse = async (courseId: string) => {
+export const findEnrollmentsForCourse = async (courseId: string) => {
   const response = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/enrollments`);
   return response.data;
 };

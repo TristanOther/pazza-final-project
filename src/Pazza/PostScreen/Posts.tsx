@@ -86,8 +86,8 @@ export default function Posts() {
                 {/* Post routes */}
                 <div className="flex-fill" style={{ width: "70%" }}>
                     <Routes>
-                        <Route index element={<ClassAtAGlance />} />
-                        <Route path="/" element={<ClassAtAGlance />} />
+                        <Route index element={<ClassAtAGlance posts={posts} />} />
+                        <Route path="/" element={<ClassAtAGlance posts={posts} />} />
                         <Route path="/posts/create" element={<CreatePostScreen />} />
                         <Route path="/posts/:postId" element={<PostScreen markPostRead={markPostRead} />} />
                     </Routes>
