@@ -16,7 +16,7 @@ export default function FileFolderNavigation() {
                     <Button type="button" variant="link" style={{ textDecoration: "none", color: "black" }}
                         onClick={() => dispatch(setSelectedTag(folder.name))}>
                         {folder.name}
-                        <span className="ms-1 pazza-unread-post-box">0</span> {/* This is a placeholder until we get DB connections to the actual posts */}
+
                     </Button>
                 </div>
             ))}
