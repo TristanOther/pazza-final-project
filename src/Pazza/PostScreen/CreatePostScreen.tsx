@@ -27,8 +27,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
     const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
     const [users, setUsers] = useState<any[]>([]);
     const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
-    const [validPost, setValidPost] = useState(false);
-    const [quillText, setQuillText] = useState("");
+    const [_, setQuillText] = useState("");
 
     const fetchUsersForCourse = async () => {
         const users = await client.findUsersForCourse(cid + "");
@@ -68,9 +67,9 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
         }
     }, []);
 
-    quillInstance.current?.on('text-change', () => {
+    quillInstance.current?.on('text-change', () => {        
+        // used to trigger a state update when the text changes in the editor
         setQuillText(quillInstance.current?.getText() || "");
-        setValidPost(quillText.length != 0 && validPost);
     });
 
     useEffect(() => {
@@ -201,44 +200,41 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
 
             <div id="editor" style={{ height: "200px", backgroundColor: "white" }} ref={quillRef} />
 
-            {!validPost && (
-                <div>
-                    {(selectedFolders.length == 0) && (
-                        <>
-                            <span className="text-danger">Please select at least one folder.</span>
-                            <br />
-                        </>
-                    )}
-                    {(postTo == "") && (
-                        <>
-                            <span className="text-danger">Please set the post's visibility.</span>
-                            <br />
-                        </>
-                    )}
-                    {(postTo == "INDV" && selectedUsers.length == 0) && (
-                        <>
-                            <span className="text-danger">Please provide at least one person to share the post with.</span>
-                            <br />
-                        </>
-                    )}
-                    {(summary.length == 0) && (
-                        <>
-                            <span className="text-danger">Please provide a summary.</span>
-                            <br />
-                        </>
-                    )}
-                    {(quillInstance.current?.getText() == "\n") && (
-                        <>
-                            <span className="text-danger">Please provide a post body.</span>
-                            <br />
-                        </>
-                    )}
-                </div>
-            )}
+            <div>
+                {(selectedFolders.length == 0) && (
+                    <>
+                        <span className="text-danger">Please select at least one folder.</span>
+                        <br />
+                    </>
+                )}
+                {(postTo == "") && (
+                    <>
+                        <span className="text-danger">Please set the post's visibility.</span>
+                        <br />
+                    </>
+                )}
+                {(postTo == "INDV" && selectedUsers.length == 0) && (
+                    <>
+                        <span className="text-danger">Please provide at least one person to share the post with.</span>
+                        <br />
+                    </>
+                )}
+                {(summary.length == 0) && (
+                    <>
+                        <span className="text-danger">Please provide a summary.</span>
+                        <br />
+                    </>
+                )}
+                {(quillInstance.current?.getText() == "\n") && (
+                    <>
+                        <span className="text-danger">Please provide a post body.</span>
+                        <br />
+                    </>
+                )}
+            </div>
             <div className="mt-3 mb-3 d-flex justify-content-start" style={{ width: "100%" }}>
                 <Button onClick={() => {
-                    setValidPost(summary.length != 0 && selectedFolders.length > 0 && postTo != "" && (postTo != "INDV" || selectedUsers.length > 0) && quillInstance.current?.getText() != "\n")
-                    if (validPost) {
+                    if (summary.length != 0 && selectedFolders.length > 0 && postTo != "" && (postTo != "INDV" || selectedUsers.length > 0) && quillInstance.current?.getText() != "\n") {
                         // add the current user to the list of users if the post is not to the entire class and the user is not already in the list of users
                         if (postTo != "ALL" && !selectedUsers.map((user: any) => user.id).includes(currentUser._id)) {
                             selectedUsers.push({ name: currentUser.firstName + " " + currentUser.lastName, id: currentUser._id });
@@ -249,13 +245,12 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                             tags: folders.filter((folder: any) => selectedFolders.includes(folder.name)).map((folder: any) => folder._id + ""),
                             content: quillInstance.current?.getSemanticHTML(),
                             createdBy: currentUser._id,
-                            viewableBy: selectedUsers.length != 0 ? selectedUsers.filter((user: any) => user).map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
+                            viewableBy: postTo != "ALL" ? selectedUsers.filter((user: any) => user).map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
                         };
 
-                        const post_promise = newPost ? postClient.createPost(post, cid ? cid : "") : postClient.updatePost({_id: postId, ...post});
+                        const post_promise = newPost ? postClient.createPost(post, cid ? cid : "") : postClient.updatePost({ _id: postId, ...post });
                         post_promise.then((res) => {
                             // set all states to default
-                            setValidPost(false);
                             setPostType("questionPost");
                             setPostTo("");
                             setSummary("");
@@ -285,7 +280,6 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                 </Button>
                 <Button className="ms-3" onClick={() => {
                     // set all states to default
-                    setValidPost(false);
                     setPostType("questionPost");
                     setPostTo("");
                     setSummary("");
@@ -293,7 +287,11 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                     setSelectedUsers([]);
                     quillInstance.current?.setText("");
 
-                    window.location.href = window.location.href.split("/").slice(0, -2).join("/");
+                    if (newPost) {
+                        window.location.href = window.location.href.split("/").slice(0, -2).join("/");
+                    } else {
+                        window.location.href = window.location.href.split("/").slice(0, -1).join("/");
+                    }
                 }}>Cancel</Button>
             </div>
         </div>
