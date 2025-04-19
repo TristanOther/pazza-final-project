@@ -88,7 +88,7 @@ export default function Posts() {
                     <Routes>
                         <Route index element={<ClassAtAGlance />} />
                         <Route path="/" element={<ClassAtAGlance />} />
-                        <Route path="/posts/create" element={<CreatePostScreen />} />
+                        <Route path="/posts/create" element={<CreatePostScreen fetchPosts={fetchPosts}/>} />
                         <Route path="/posts/:postId" element={<PostScreen markPostRead={markPostRead} />} />
                     </Routes>
                 </div>

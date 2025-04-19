@@ -19,7 +19,6 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
         const fetchTags = async() => {
             try {
                 const postTags = tags.filter((t: any) => currentPost.tags.includes(t._id));
-                console.log(postTags);
                 setPostTags(postTags);
             } catch (err) {
                 console.log(err);
