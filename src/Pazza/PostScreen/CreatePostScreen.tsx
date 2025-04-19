@@ -88,7 +88,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
             }
 
             setSummary(post.title);
-            setSelectedFolders(post.tags.map((id: string) => folders.find((folder: any) => folder._id == id) ? folders.find((folder: any) => folder._id == id).name : ""));
+            setSelectedFolders(post.tags.map((tag_id: any) => (folders.find((folder: any) => folder._id === tag_id)).name));
             if (postToVal === "INDV") {
                 const selectedUsers = post.viewableBy.map((userID: string) => {
                     if (userID === "INSTRUCTORS") {
@@ -242,11 +242,12 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                         const post = {
                             postType: postType,
                             title: summary,
-                            tags: folders.filter((folder: any) => selectedFolders.includes(folder.name)).map((folder: any) => folder._id + ""),
+                            tags: selectedFolders.map((folder_name: string) => folders.find((folder: any) => folder.name === folder_name)._id + ""),
                             content: quillInstance.current?.getSemanticHTML(),
                             createdBy: currentUser._id,
                             viewableBy: postTo != "ALL" ? selectedUsers.filter((user: any) => user).map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
                         };
+                        console.log("NEW/UPDATED POST: ", post);
 
                         const post_promise = newPost ? postClient.createPost(post, cid ? cid : "") : postClient.updatePost({ _id: postId, ...post });
                         post_promise.then((res) => {

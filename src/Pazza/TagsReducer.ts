@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   tags: [],
-  selectedTag: "",
+  selectedTag: null,
 };
 const tagsSlice = createSlice({
   name: "tags",
