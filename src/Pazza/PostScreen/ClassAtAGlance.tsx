@@ -72,8 +72,8 @@ export default function ClassAtAGlance({ posts }: {posts: any}) {
                         [enrollments.length, "Enrolled Students"],
                     ].map(([value, description], index) => (
                         <React.Fragment key={index}>
-                        <div style={{ textAlign: "right", fontWeight: "bold", whiteSpace: "nowrap" }}>{value}</div>
-                        <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{description}</div>
+                            <div style={{ textAlign: "right", fontWeight: "bold", whiteSpace: "nowrap" }}>{value}</div>
+                            <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{description}</div>
                         </React.Fragment>
                     ))}
                 </div>
