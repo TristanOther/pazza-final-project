@@ -35,7 +35,9 @@ export default function Posts() {
         }
     };
     useEffect(() => {
-        fetchPosts();
+        if (cid) {
+            fetchPosts();
+        }
     }, [cid]);
 
     const markPostRead = async (pid: string, uid: string) => {
@@ -88,8 +90,9 @@ export default function Posts() {
                     <Routes>
                         <Route index element={<ClassAtAGlance posts={posts} />} />
                         <Route path="/" element={<ClassAtAGlance posts={posts} />} />
-                        <Route path="/posts/create" element={<CreatePostScreen fetchPosts={fetchPosts}/>} />
+                        <Route path="/posts/:postId/edit" element={<CreatePostScreen fetchPosts={fetchPosts} posts={posts} />} />
                         <Route path="/posts/:postId" element={<PostScreen markPostRead={markPostRead} />} />
+                        <Route path="/posts/create" element={<CreatePostScreen fetchPosts={fetchPosts} />} />
                     </Routes>
                 </div>
             </div>
