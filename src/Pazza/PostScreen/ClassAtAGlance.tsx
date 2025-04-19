@@ -66,10 +66,10 @@ export default function ClassAtAGlance({ posts }: {posts: any}) {
                 {/* Right: General Stats */}
                 <div style={{ display: "grid", gridTemplateColumns: "max-content 1fr", rowGap: "0.5rem", columnGap: "1rem" }}>
                     {[
-                        [posts.length, "Total Posts"],
+                        [posts?.length, "Total Posts"],
                         ["PLACEHOLDER", "Instructor Responses"],
                         ["PLACEHOLDER", "Student Responses"],
-                        [enrollments.length, "Enrolled Students"],
+                        [enrollments?.length, "Enrolled Students"],
                     ].map(([value, description], index) => (
                         <React.Fragment key={index}>
                             <div style={{ textAlign: "right", fontWeight: "bold", whiteSpace: "nowrap" }}>{value}</div>
