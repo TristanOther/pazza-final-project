@@ -1,4 +1,6 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import * as postClient from './PostClient.ts';
+import * as userClient from '../../Kambaz/Account/client.ts';
 import { useEffect, useState } from "react";
 import { BsQuestionSquareFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
@@ -10,23 +12,12 @@ import * as userClient from '../../Kambaz/Account/client.ts';
 
 export default function PostScreen({ markPostRead }: { markPostRead: (pid: string, uid: string) => void }) {
     const { postId } = useParams();
+    const navigate = useNavigate();
     const { tags } = useSelector((state: any) => state.tagsReducer);
     const [currentPost, setCurrentPost] = useState<any>({});
     const [postCreator, setPostCreator] = useState<any>({});
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [postTags, setPostTags] = useState<any>([]);
-
-    useEffect(() => {
-        const fetchTags = async() => {
-            try {
-                const postTags = tags.filter((t: any) => currentPost.tags.includes(t._id));
-                setPostTags(postTags);
-            } catch (err) {
-                console.log(err);
-            }
-        }
-        fetchTags();
-    }, [tags, currentPost.tags]);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -36,12 +27,28 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
                 const creator = await userClient.findUserById(post.createdBy);
                 setPostCreator(creator);
             } catch (err) {
-                console.log(err);
+                // console.log(err);
             }
         }
         fetchPost();
-        if (postId) markPostRead(postId, currentUser._id);
+
+        const postRead = currentPost?.readBy?.includes(currentUser._id);
+        if (postId && !postRead) {
+            markPostRead(postId, currentUser._id);
+        }
     }, [currentUser._id, markPostRead, postId]);
+
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const postTags = tags.filter((t: any) => currentPost.tags.includes(t._id));
+                setPostTags(postTags);
+            } catch (err) {
+                // console.log(err);
+            }
+        }
+        fetchTags();
+    }, [tags, currentPost.tags]);
 
     return (
         <div
@@ -122,7 +129,7 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
                 <div
                     className="pazza-blue-background text-white px-3 py-2 rounded text-nowrap"
                     style={{ cursor: "pointer" }}
-                    onClick={() => null}
+                    onClick={() => navigate(`edit`)}
                 >
                     Edit
                 </div>

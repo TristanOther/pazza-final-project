@@ -8,12 +8,19 @@ import "quill/dist/quill.snow.css";
 import * as client from "../../Kambaz/Courses/client";
 import * as postClient from "./PostClient"
 
-export default function CreatePostScreen({fetchPosts}: any) {
+export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: any, posts?: any[] }) {
+    const { cid, postId } = useParams();
+
+    if (!posts) {
+        posts = [];
+    }
+    const folders = useSelector((state: any) => state.tagsReducer.tags)
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const newPost = posts.length === 0;
     const options = [
         { label: "Question", id: "questionPost", description: "If you need an answer" },
         { label: "Note", id: "notePost", description: "If you don't need an answer" },
     ];
-
     const [postType, setPostType] = useState("questionPost");
     const [postTo, setPostTo] = useState("");
     const [summary, setSummary] = useState("");
@@ -22,15 +29,11 @@ export default function CreatePostScreen({fetchPosts}: any) {
     const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
     const [validPost, setValidPost] = useState(false);
     const [quillText, setQuillText] = useState("");
-    const { cid } = useParams();
-
-    const folders = useSelector((state: any) => state.tagsReducer.tags)
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     const fetchUsersForCourse = async () => {
-        const users = await client.findUsersForCourse(cid ? cid : "");
-        const new_users = users.map((user: any) => ({ value: user._id, label: `${user.firstName} ${user.lastName} (${user.role})` }));
-        new_users.push({ value: -1, label: `All Instructors` });
+        const users = await client.findUsersForCourse(cid + "");
+        const new_users = users.map((user: any) => ({ id: user._id, name: `${user.firstName} ${user.lastName} (${user.role})` }));
+        new_users.push({ id: -1, name: `All Instructors` });
         setUsers(new_users);
     };
     const updateSelectedFolders = (folder: string) => {
@@ -69,6 +72,39 @@ export default function CreatePostScreen({fetchPosts}: any) {
         setQuillText(quillInstance.current?.getText() || "");
         setValidPost(quillText.length != 0 && validPost);
     });
+
+    useEffect(() => {
+        if (!newPost) {
+            const post = posts.find((p: any) => p._id === postId);
+            if (!post) return;
+
+            setPostType(post.postType);
+
+            const postToVal = post.viewableBy[0] === "ALL" ? "ALL" : "INDV";
+            setPostTo(postToVal);
+            if (postToVal === "INDV") {
+                document.getElementById("postToIndv")?.click();
+            } else {
+                document.getElementById("postToAll")?.click();
+            }
+
+            setSummary(post.title);
+            setSelectedFolders(post.tags.map((id: string) => folders.find((folder: any) => folder._id == id) ? folders.find((folder: any) => folder._id == id).name : ""));
+            if (postToVal === "INDV") {
+                const selectedUsers = post.viewableBy.map((userID: string) => {
+                    if (userID === "INSTRUCTORS") {
+                        return "INSTRUCTORS";
+                    } else {
+                        const user = users.find((user: any) => user.id === userID);
+                        return user ? user : null;
+                    }
+                });
+                setSelectedUsers(selectedUsers.filter((user: any) => user));
+            }
+            quillInstance.current?.clipboard.dangerouslyPasteHTML(post.content);
+        }
+    }, [users]);
+
 
     return (
         <div style={{ width: "100%" }}>
@@ -120,8 +156,16 @@ export default function CreatePostScreen({fetchPosts}: any) {
                     <div>
                         <span className="pazza-create-text me-3 ms-2" style={{ fontWeight: "bolder" }}>Enter 1 or more people</span>
                         <Select
-                            options={users.sort((a, b) => a.label.localeCompare(b.label))}
+                            id="select-viewable-by"
+                            options={users.map((user: any) => ({ label: user.name, value: user.id })).sort((a, b) => a.label.localeCompare(b.label))}
                             isMulti
+                            value={selectedUsers.filter((user: any) => user).map((user: any) => {
+                                if (user == "INSTRUCTORS") {
+                                    return { value: -1, label: "All Instructors" }
+                                } else {
+                                    return { label: user.name, value: user.id };
+                                }
+                            })}
                             onChange={(selectedOptions) => {
                                 setSelectedUsers(selectedOptions.map((option: any) => ({ name: option.label, id: option.value })));
                             }}
@@ -145,7 +189,7 @@ export default function CreatePostScreen({fetchPosts}: any) {
                 <br />
                 <br />
                 <span className="ms-2 me-2 pazza-create-text" style={{ fontWeight: "bolder" }}>Summary*</span>
-                <input className="ms-2" style={{ borderRadius: "3px", border: "2px", width: "35%" }} type="text"
+                <input className="ms-2" defaultValue={summary} style={{ borderRadius: "3px", border: "2px", width: "35%" }} type="text"
                     placeholder="Enter a one line summary less than 100 characters"
                     onChange={(e) => setSummary(e.target.value)} maxLength={100} />
                 <br />
@@ -195,8 +239,8 @@ export default function CreatePostScreen({fetchPosts}: any) {
                 <Button onClick={() => {
                     setValidPost(summary.length != 0 && selectedFolders.length > 0 && postTo != "" && (postTo != "INDV" || selectedUsers.length > 0) && quillInstance.current?.getText() != "\n")
                     if (validPost) {
-                        // add the current user to the list of users if the post is not to the entire class
-                        if (postTo != "ALL") {
+                        // add the current user to the list of users if the post is not to the entire class and the user is not already in the list of users
+                        if (postTo != "ALL" && !selectedUsers.map((user: any) => user.id).includes(currentUser._id)) {
                             selectedUsers.push({ name: currentUser.firstName + " " + currentUser.lastName, id: currentUser._id });
                         }
                         const post = {
@@ -205,10 +249,11 @@ export default function CreatePostScreen({fetchPosts}: any) {
                             tags: folders.filter((folder: any) => selectedFolders.includes(folder.name)).map((folder: any) => folder._id + ""),
                             content: quillInstance.current?.getSemanticHTML(),
                             createdBy: currentUser._id,
-                            viewableBy: selectedUsers.length != 0 ? selectedUsers.map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
+                            viewableBy: selectedUsers.length != 0 ? selectedUsers.filter((user: any) => user).map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
                         };
 
-                        postClient.createPost(post, cid ? cid : "").then((res) => {
+                        const post_promise = newPost ? postClient.createPost(post, cid ? cid : "") : postClient.updatePost({_id: postId, ...post});
+                        post_promise.then((res) => {
                             // set all states to default
                             setValidPost(false);
                             setPostType("questionPost");
@@ -222,9 +267,13 @@ export default function CreatePostScreen({fetchPosts}: any) {
                             fetchPosts();
 
                             // redirect to the new post
-                            var post_redirect = window.location.href.split("/").slice(0, -1);
-                            post_redirect.push(res._id + "");
-                            window.location.href = post_redirect.join("/");
+                            if (newPost) {
+                                var post_redirect = window.location.href.split("/").slice(0, -1);
+                                post_redirect.push(res._id + "");
+                                window.location.href = post_redirect.join("/");
+                            } else {
+                                window.location.href = window.location.href.split("/").slice(0, -1).join("/");
+                            }
                         }).catch((err) => {
                             // if post fails, redirect to default post screen
                             console.error(err);
@@ -232,7 +281,7 @@ export default function CreatePostScreen({fetchPosts}: any) {
                         });
                     }
                 }}>
-                    Create {postType === "questionPost" ? "Question" : "Note"}
+                    {newPost ? "Create" : "Update"} {postType === "questionPost" ? "Question" : "Note"}
                 </Button>
                 <Button className="ms-3" onClick={() => {
                     // set all states to default
