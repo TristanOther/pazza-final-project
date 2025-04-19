@@ -7,9 +7,6 @@ import { useSelector } from "react-redux";
 import DOMPurify from 'dompurify';
 import FollowUpDiscussion from "./FollowUpDiscussion.tsx";
 
-import * as postClient from './PostClient.ts';
-import * as userClient from '../../Kambaz/Account/client.ts';
-
 export default function PostScreen({ markPostRead }: { markPostRead: (pid: string, uid: string) => void }) {
     const { postId } = useParams();
     const navigate = useNavigate();
