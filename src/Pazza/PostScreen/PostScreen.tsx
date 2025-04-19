@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 import { BsQuestionSquareFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import DOMPurify from 'dompurify';
+import FollowUpDiscussion from "./FollowUpDiscussion.tsx";
+
+import * as postClient from './PostClient.ts';
+import * as userClient from '../../Kambaz/Account/client.ts';
 
 export default function PostScreen({ markPostRead }: { markPostRead: (pid: string, uid: string) => void }) {
     const { postId } = useParams();
@@ -134,6 +138,7 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
             {/* TODO: student answer section component goes here */}
             {/* TODO: instructor answer section component goes here */}
             {/* TODO: followup discussion section component goes here */}
+            <FollowUpDiscussion post={currentPost} />
         </div>
     );
 }
