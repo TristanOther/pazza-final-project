@@ -18,7 +18,6 @@ export default function PazzaNavigation() {
     { label: "Manage Class", path: "Manage", faculty_only: true },
   ];
 
-  console.log("Back part: ", pathname.split("/Piazza")[1]);
   return (
     <div id="pazza-nav-bar" className="d-flex pazza-blue-background">
       <a href={homeLink} style={{ textDecoration: "none" }}>

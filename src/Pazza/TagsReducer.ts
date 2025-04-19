@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
+
 const initialState = {
   tags: [],
-  selectedTag: String,
+  selectedTag: "",
 };
 const tagsSlice = createSlice({
   name: "tags",

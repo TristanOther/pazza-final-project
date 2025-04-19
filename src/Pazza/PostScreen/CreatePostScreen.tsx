@@ -8,13 +8,12 @@ import "quill/dist/quill.snow.css";
 import * as client from "../../Kambaz/Courses/client";
 import * as postClient from "./PostClient"
 
-export default function CreatePostScreen() {
+export default function CreatePostScreen({fetchPosts}: any) {
     const options = [
         { label: "Question", id: "questionPost", description: "If you need an answer" },
         { label: "Note", id: "notePost", description: "If you don't need an answer" },
     ];
 
-    let folders: string[] = [];
     const [postType, setPostType] = useState("questionPost");
     const [postTo, setPostTo] = useState("");
     const [summary, setSummary] = useState("");
@@ -22,9 +21,12 @@ export default function CreatePostScreen() {
     const [users, setUsers] = useState<any[]>([]);
     const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
     const [validPost, setValidPost] = useState(false);
+    const [quillText, setQuillText] = useState("");
     const { cid } = useParams();
 
+    const folders = useSelector((state: any) => state.tagsReducer.tags)
     const { currentUser } = useSelector((state: any) => state.accountReducer);
+
     const fetchUsersForCourse = async () => {
         const users = await client.findUsersForCourse(cid ? cid : "");
         const new_users = users.map((user: any) => ({ value: user._id, label: `${user.firstName} ${user.lastName} (${user.role})` }));
@@ -43,34 +45,6 @@ export default function CreatePostScreen() {
     useEffect(() => {
         fetchUsersForCourse();
     }, []);
-    useEffect(() => {
-        const fetchFolders = async () => {
-            // Simulate fetching folders from the DB until the dao does it
-            folders = [
-                "Hw1",
-                "Hw2",
-                "Hw3",
-                "Hw4",
-                "Hw5",
-                "Project1",
-                "Project2",
-                "Office_Hours"
-            ];
-            fetchFolders();
-        };
-    }, []);
-    // should be replaced with a call to the DB to get the folders for the course later
-    folders = [
-        "Hw1",
-        "Hw2",
-        "Hw3",
-        "Hw4",
-        "Hw5",
-        "Project1",
-        "Project2",
-        "Office_Hours"
-    ];
-
 
     // for the rich text editor, Quill
     const quillRef = useRef<HTMLDivElement | null>(null);
@@ -90,6 +64,11 @@ export default function CreatePostScreen() {
             });
         }
     }, []);
+
+    quillInstance.current?.on('text-change', () => {
+        setQuillText(quillInstance.current?.getText() || "");
+        setValidPost(quillText.length != 0 && validPost);
+    });
 
     return (
         <div style={{ width: "100%" }}>
@@ -152,10 +131,10 @@ export default function CreatePostScreen() {
                 <br />
                 <div className="d-flex justify-content-left mb-1">
                     <span className="ms-2 me-2 pazza-create-text" style={{ fontWeight: "bolder" }}>Select Folder(s)* </span>
-                    {folders.map((folder: string) =>
-                        <button className={`me-2 border-0 ${selectedFolders.includes(folder) ? "bg-primary" : "bg-light"}`} style={{ borderRadius: "5px" }}
-                            onClick={() => updateSelectedFolders(folder)}>
-                            {folder}
+                    {folders.map((folder: any) =>
+                        <button className={`me-2 border-0 ${selectedFolders.includes(folder.name) ? "bg-primary" : "bg-light"}`} style={{ borderRadius: "5px" }}
+                            onClick={() => updateSelectedFolders(folder.name)}>
+                            {folder.name}
                         </button>
                     )}
                 </div>
@@ -176,7 +155,8 @@ export default function CreatePostScreen() {
                 </span>
             </div>
 
-            <div id="editor" style={{ height: "200px", backgroundColor: "white" }} ref={quillRef}></div>
+            <div id="editor" style={{ height: "200px", backgroundColor: "white" }} ref={quillRef} />
+
             {!validPost && (
                 <div>
                     {(selectedFolders.length == 0) && (
@@ -222,7 +202,7 @@ export default function CreatePostScreen() {
                         const post = {
                             postType: postType,
                             title: summary,
-                            tags: selectedFolders,
+                            tags: folders.filter((folder: any) => selectedFolders.includes(folder.name)).map((folder: any) => folder._id + ""),
                             content: quillInstance.current?.getSemanticHTML(),
                             createdBy: currentUser._id,
                             viewableBy: selectedUsers.length != 0 ? selectedUsers.map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
@@ -237,6 +217,9 @@ export default function CreatePostScreen() {
                             setSelectedFolders([]);
                             setSelectedUsers([]);
                             quillInstance.current?.setText("");
+
+                            // fetch posts again to update the list of posts outside of this component
+                            fetchPosts();
 
                             // redirect to the new post
                             var post_redirect = window.location.href.split("/").slice(0, -1);

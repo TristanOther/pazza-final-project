@@ -13,17 +13,17 @@ import * as TagsClient from "./TagsClient.ts";
 import { useEffect } from "react";
 
 export default function Pazza() {
-    const { cid } = useParams();
-
+    const { cid } = useParams();    
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const fetchTags = async() => {
-            dispatch(setTags(await TagsClient.fetchTags(cid as string)));
+        const fetchTags = async () => {
+            const tags = await TagsClient.fetchTags(cid ? cid : "");
+            dispatch(setTags(tags));
         }
         fetchTags();
     }, [cid, dispatch]);
-    
+
     return (
         <div id="wd-pazza-q-and-a">
             <div className="mx-3 my-3">
