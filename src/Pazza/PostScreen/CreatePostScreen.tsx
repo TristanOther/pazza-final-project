@@ -88,7 +88,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
             }
 
             setSummary(post.title);
-            setSelectedFolders(post.tags.map((tag_id: any) => (folders.find((folder: any) => folder._id === tag_id)).name));
+            setSelectedFolders(post.tags.map((tag_id: any) => (folders.find((folder: any) => folder._id === tag_id))?.name));
             if (postToVal === "INDV") {
                 const selectedUsers = post.viewableBy.map((userID: string) => {
                     if (userID === "INSTRUCTORS") {

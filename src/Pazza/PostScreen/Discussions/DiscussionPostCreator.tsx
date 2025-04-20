@@ -1,31 +1,32 @@
-    // DiscussionPostCreator.tsx
-    import { useRef, useEffect, useState } from "react";
-    import Quill from "quill";
-    import "quill/dist/quill.snow.css";
-    import { Button } from "react-bootstrap";
+// DiscussionPostCreator.tsx
+import { useRef, useEffect, useState } from "react";
+import Quill from "quill";
+import "quill/dist/quill.snow.css";
+import { Button } from "react-bootstrap";
 
 export default function DiscussionPostCreator({
-        onCancel,
-        onSubmit,
-        discussionPost,
+    onCancel,
+    onSubmit,
+    discussionPost,
 }: {
-        onCancel: () => void;
-        onSubmit: (content: string) => void;
-        discussionPost?: any,
+    onCancel: () => void;
+    onSubmit: (content: string) => void;
+    discussionPost?: any,
 }) {
     const editorRef = useRef<HTMLDivElement | null>(null);
     const quillInstance = useRef<Quill | null>(null);
     const [content, setContent] = useState('');
 
     useEffect(() => {
+        console.log(discussionPost);
         console.log(discussionPost.content);
         if (editorRef.current && !editorRef.current.firstChild) {
             quillInstance.current = new Quill(editorRef.current, {
                 modules: {
                     toolbar: [
-                    [{ header: [1, 2, false] }],
-                    ["bold", "italic", "underline"],
-                    ["link", "image", "code-block"],
+                        [{ header: [1, 2, false] }],
+                        ["bold", "italic", "underline"],
+                        ["link", "image", "code-block"],
                     ],
                 },
                 placeholder: "Write your reply...",
@@ -33,7 +34,7 @@ export default function DiscussionPostCreator({
             });
 
             quillInstance.current.on("text-change", () => {
-            setContent(quillInstance.current?.getText() ?? "");
+                setContent(quillInstance.current?.getText() ?? "");
             });
         }
     }, []);
