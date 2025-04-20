@@ -197,7 +197,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                     Details
                 </span>
             </div>
-            <div id="editor" style={{ height: "200px", maxWidth: "800px", backgroundColor: "white" }} ref={quillRef} />
+            <div id="editor" style={{ height: "200px", backgroundColor: "white" }} ref={quillRef} />
             <div>
                 {(selectedFolders.length == 0) && (
                     <>
