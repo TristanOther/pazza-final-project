@@ -76,8 +76,6 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
         if (!newPost) {
             const post = posts.find((p: any) => p._id === postId);
             if (!post) return;
-            console.log(post);
-            console.log(postId);
 
             setPostType(post.postType);
 
@@ -89,7 +87,6 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                 document.getElementById("postToAll")?.click();
             }
 
-            console.log(folders);
             setSummary(post.title);
             setSelectedFolders(post.tags.map((tag_id: any) => (folders.find((folder: any) => folder._id === tag_id))?.name));
             if (postToVal === "INDV") {
