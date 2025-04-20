@@ -244,6 +244,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                             content: quillInstance.current?.getSemanticHTML(),
                             createdBy: currentUser._id,
                             viewableBy: postTo != "ALL" ? selectedUsers.filter((user: any) => user).map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
+                            instructor: ["FACULTY",  "TA", "ADMIN"].includes(currentUser.role),
                         };
 
                         const post_promise = newPost ? postClient.createPost(post, cid ? cid : "") : postClient.updatePost({ _id: postId, ...post });
