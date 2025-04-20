@@ -18,8 +18,6 @@ export default function DiscussionPostCreator({
     const [content, setContent] = useState('');
 
     useEffect(() => {
-        console.log(discussionPost);
-        console.log(discussionPost.content);
         if (editorRef.current && !editorRef.current.firstChild) {
             quillInstance.current = new Quill(editorRef.current, {
                 modules: {
@@ -33,9 +31,13 @@ export default function DiscussionPostCreator({
                 theme: "snow",
             });
 
-            quillInstance.current.on("text-change", () => {
+            quillInstance.current?.on("text-change", () => {
                 setContent(quillInstance.current?.getText() ?? "");
             });
+
+            if (quillInstance.current && discussionPost) {
+                quillInstance.current?.clipboard.dangerouslyPasteHTML(discussionPost.content);
+            }
         }
     }, []);
 
