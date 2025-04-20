@@ -59,32 +59,52 @@ export default function Posts() {
     return (
         <div className="pazza-grey-background">
             {/* File Folder Navigation Bar (FFNB) */}
-            <div style={{ width: "100%" }}>
+            <div style={{ width: "100%", border: "1px solid #aaa" }}>
                 <FileFolderNavigation />
             </div>
-            <div className="d-flex" style={{ width: "100%" }}>
-                {/* List of Posts Sidebar (LOPS) */}
+            <div className="d-flex" style={{ width: "100%", height: "90vh"}}>
+                {!showLops && (
+                    <Button
+                        variant="outline-secondary"
+                        style={{
+                            width: "25px",
+                            height: "25px",
+                            padding: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: 0,
+                        }}
+                        onClick={() => setShowLops(!showLops)}
+                    >
+                        {showLops ? "◄" : "►"}
+                    </Button>
+                )}
                 {showLops && (
-                    <div className="flex-fill" style={{ width: "30%" }}>
-                        <ListOfPostsSidebar posts={posts} />
+                    <div className="flex-fill pazza-grey-background" style={{ width: "30%", height: "90vh" }}>
+                        <div className="p-2 pazza-dark-grey-background" style={{ width: "100%", border: "1px solid #aaa" }}>
+                            <Button
+                                variant="outline-secondary"
+                                style={{
+                                    width: "25px",
+                                    height: "25px",
+                                    padding: 0,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    borderRadius: 0,
+                                }}
+                                onClick={() => setShowLops(!showLops)}
+                            >
+                                {showLops ? "◄" : "►"}
+                            </Button>
+                        </div>
+                        {/* List of Posts Sidebar (LOPS) */}
+                        <div>
+                            <ListOfPostsSidebar posts={posts} />
+                        </div>
                     </div>
                 )}
-                {/* Minimize button for LOPS */}
-                <Button
-                    variant="outline-secondary"
-                    style={{
-                        width: "25px",
-                        height: "25px",
-                        padding: 0,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderRadius: 0,
-                    }}
-                    onClick={() => setShowLops(!showLops)}
-                >
-                    {showLops ? "◄" : "►"}
-                </Button>
                 {/* Post routes */}
                 <div className="flex-fill" style={{ width: "70%" }}>
                     <Routes>
