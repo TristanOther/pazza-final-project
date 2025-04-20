@@ -245,7 +245,6 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                             createdBy: currentUser._id,
                             viewableBy: postTo != "ALL" ? selectedUsers.filter((user: any) => user).map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
                         };
-                        console.log("NEW/UPDATED POST: ", post);
 
                         const post_promise = newPost ? postClient.createPost(post, cid ? cid : "") : postClient.updatePost({ _id: postId, ...post });
                         post_promise.then((res) => {

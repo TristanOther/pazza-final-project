@@ -53,11 +53,12 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: a
         // the interpreter hates this, but it seems to work, so.....
 
         if (document.activeElement !== actions_dd) return;
-        if (e.target?.value === "Actions") return;
-        if (e.target?.value === "Edit") {
+        const target = e.target as HTMLSelectElement;
+        if (target?.value === "Actions") return;
+        if (target?.value === "Edit") {
             editPost(currentPost);
             e.preventDefault();
-        } else if (e.target?.value === "Delete") {
+        } else if (target?.value === "Delete") {
             deletePost(currentPost);
             e.preventDefault();
         }
