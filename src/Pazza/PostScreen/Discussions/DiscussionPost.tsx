@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import DiscussionPostCreator from './DiscussionPostCreator';
 
-export default function DiscussionPost({ discussionPost, deleteDiscussionPost, editDiscussionPost }: { 
+export default function DiscussionPost({ discussionPost, deleteDiscussionPost, editDiscussionPost }: {
     discussionPost: any,
     deleteDiscussionPost: (dpid: string) => void,
     editDiscussionPost: (dp: any) => void,
@@ -12,7 +12,7 @@ export default function DiscussionPost({ discussionPost, deleteDiscussionPost, e
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
     const [editing, setEditing] = useState<boolean>(false);
-    
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -56,14 +56,14 @@ export default function DiscussionPost({ discussionPost, deleteDiscussionPost, e
                                 className="position-absolute pazza-white-background border shadow-sm"
                                 style={{ right: 0, top: '100%', zIndex: 1000 }}
                             >
-                                <div 
-                                    className="px-2 py-1 border-bottom" 
+                                <div
+                                    className="px-2 py-1 border-bottom"
                                     style={{ cursor: 'pointer' }}
                                     onClick={() => setEditing(true)}
                                 >
                                     Edit
                                 </div>
-                                <div 
+                                <div
                                     className="px-2 py-1 text-danger"
                                     style={{ cursor: 'pointer' }}
                                     onClick={() => deleteDiscussionPost(discussionPost._id)}
@@ -81,10 +81,10 @@ export default function DiscussionPost({ discussionPost, deleteDiscussionPost, e
             )}
             {/* Editor */}
             {editing && (
-                <DiscussionPostCreator 
-                    onCancel={() => setEditing(false)} 
+                <DiscussionPostCreator
+                    onCancel={() => setEditing(false)}
                     onSubmit={(content) => {
-                        editDiscussionPost({...discussionPost, content});
+                            editDiscussionPost({ ...discussionPost, content });
                         setEditing(false);
                     }}
                     discussionPost={discussionPost}
