@@ -13,8 +13,8 @@ export default function PazzaNavigation() {
 
   const navbar_links = [
     { label: "Q & A", path: "", faculty_only: false },
-    { label: "Resources", path: "Resources", faculty_only: false },
-    { label: "Statistics", path: "Statistics", faculty_only: false },
+    // { label: "Resources", path: "Resources", faculty_only: false },
+    // { label: "Statistics", path: "Statistics", faculty_only: false },
     { label: "Manage Class", path: "Manage", faculty_only: true },
   ];
 
@@ -38,7 +38,7 @@ export default function PazzaNavigation() {
       </div>
       <div className="d-flex align-items-center ms-auto">
         <CiUser className="fs-2 bg-light" />
-        <a href={`${homeLink}/Profile/${userName}`} style={{ textDecoration: "none" }}>
+        <a style={{ textDecoration: "none" }}>
           <span className={`ms-2 text-white bg-none fw-bold 
                 ${pathname.includes(`/Piazza/Profile/${userName}`) ? "text-decoration-underline" : ""}`}>{userFirstLastName}
           </span>

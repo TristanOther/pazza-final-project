@@ -22,7 +22,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
         { label: "Note", id: "notePost", description: "If you don't need an answer" },
     ];
     const [postType, setPostType] = useState("questionPost");
-    const [postTo, setPostTo] = useState("");
+    const [postTo, setPostTo] = useState("ALL");
     const [summary, setSummary] = useState("");
     const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
     const [users, setUsers] = useState<any[]>([]);
@@ -67,7 +67,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
         }
     }, []);
 
-    quillInstance.current?.on('text-change', () => {        
+    quillInstance.current?.on('text-change', () => {
         // used to trigger a state update when the text changes in the editor
         setQuillText(quillInstance.current?.getText() || "");
     });
@@ -244,13 +244,22 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                             content: quillInstance.current?.getSemanticHTML(),
                             createdBy: currentUser._id,
                             viewableBy: postTo != "ALL" ? selectedUsers.filter((user: any) => user).map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
-                            instructor: ["FACULTY",  "TA", "ADMIN"].includes(currentUser.role),
+                            instructor: ["FACULTY", "TA", "ADMIN"].includes(currentUser.role),
                         };
 
-                        const post_promise = newPost ? postClient.createPost(post, cid ? cid : "") : postClient.updatePost({ _id: postId, ...post });
+                        const post_promise = newPost ?
+                            postClient.createPost(post, cid ? cid : "") :
+                            postClient.updatePost({
+                                _id: postId,
+                                title: post.title,
+                                tags: post.tags,
+                                content: post.content,
+                                postType: post.postType,
+                                viewableBy: post.viewableBy,
+                            });
                         post_promise.then((res) => {
                             // set all states to default
-                            setPostType("questionPost");
+                            setPostType("questionPost")
                             setPostTo("");
                             setSummary("");
                             setSelectedFolders([]);
