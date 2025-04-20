@@ -1,25 +1,14 @@
 import DOMPurify from 'dompurify';
 import { useState } from 'react';
-import DiscussionPostCreator from './DiscussionPostCreator';
+import ReplyCreator from '../ReplyCreator';
 import ActionsDropdown from '../ActionsDropdown';
 
-export default function DiscussionPost({ discussionPost, deleteDiscussionPost, editDiscussionPost }: {
+export default function DiscussionPost({ discussionPost, deleteDiscussionPost, editDiscussionPost }: { 
     discussionPost: any,
     deleteDiscussionPost: (dpid: string) => void,
     editDiscussionPost: (dp: any) => void,
 }) {
     const [editing, setEditing] = useState<boolean>(false);
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setShowDropdown(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
 
     return (
         <div className="ms-2">
@@ -47,13 +36,13 @@ export default function DiscussionPost({ discussionPost, deleteDiscussionPost, e
             )}
             {/* Editor */}
             {editing && (
-                <DiscussionPostCreator
-                    onCancel={() => setEditing(false)}
+                <ReplyCreator 
+                    onCancel={() => setEditing(false)} 
                     onSubmit={(content) => {
-                            editDiscussionPost({ ...discussionPost, content });
+                        editDiscussionPost({...discussionPost, content});
                         setEditing(false);
                     }}
-                    discussionPost={discussionPost}
+                    object={discussionPost}
                 />
             )}
         </div>

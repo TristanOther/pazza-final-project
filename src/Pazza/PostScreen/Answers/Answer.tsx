@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DOMPurify from 'dompurify';
-import AnswerCreator from "./AnswerCreator";
+import ReplyCreator from "../ReplyCreator";
 import ActionsDropdown from "../ActionsDropdown";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -23,13 +23,13 @@ export default function Answer({ answer, deleteAnswer, editAnswer }: {
                     </div>
                 )}
                 {editing && (
-                    <AnswerCreator 
+                    <ReplyCreator 
                         onCancel={() => setEditing(false)} 
                         onSubmit={(content) => {
                             editAnswer({...answer, content});
                             setEditing(false);
                         }}
-                        answer={answer}
+                        object={answer}
                     />
                 )}
             </div>

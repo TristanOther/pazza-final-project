@@ -4,7 +4,6 @@ import { BsFillExclamationSquareFill, BsQuestionSquareFill } from "react-icons/b
 import { useSelector } from "react-redux";
 import DOMPurify from 'dompurify';
 import FollowUpDiscussion from "./Discussions/FollowUpDiscussion.tsx";
-import { current } from "@reduxjs/toolkit";
 import Answer from "./Answers/AnswerSection.tsx";
 
 import * as postClient from './PostClient.ts';
@@ -51,10 +50,8 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
         fetchTags();
     }, [tags, currentPost.tags]);
 
-    var actions_dd = document.getElementById("pazza-post-actions-dd") as HTMLSelectElement;
+    const actions_dd = document.getElementById("pazza-post-actions-dd") as HTMLSelectElement;
     actions_dd?.addEventListener("change", (e) => {
-        // the interpreter hates this, but it seems to work, so.....
-
         if (document.activeElement !== actions_dd) return;
         const target = e.target as HTMLSelectElement;
         if (target?.value === "Actions") return;
