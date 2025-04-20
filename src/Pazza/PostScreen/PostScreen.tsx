@@ -8,8 +8,9 @@ import FollowUpDiscussion from "./Discussions/FollowUpDiscussion.tsx";
 import * as postClient from './PostClient.ts';
 import * as userClient from '../../Kambaz/Account/client.ts';
 import StudentIcon from "./StudentIcon.tsx";
+import Answer from "./Answers/AnswerSection.tsx";
 
-export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: any, markPostRead: (pid: string, uid: string) => void }) {
+export default function PostScreen({ markPostRead }: { markPostRead: (pid: string, uid: string) => void }) {
     const { postId } = useParams();
     const navigate = useNavigate();
     const { tags } = useSelector((state: any) => state.tagsReducer);
@@ -48,44 +49,6 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: a
         }
         fetchTags();
     }, [tags, currentPost.tags]);
-
-
-    var actions_dd = document.getElementById("pazza-post-actions-dd") as HTMLSelectElement;
-    actions_dd?.addEventListener("change", (e) => {
-        // the interpreter hates this, but it seems to work, so.....
-
-        if (document.activeElement !== actions_dd) return;
-        const target = e.target as HTMLSelectElement;
-        if (target?.value === "Actions") return;
-        if (target?.value === "Edit") {
-            editPost(currentPost);
-            e.preventDefault();
-        } else if (target?.value === "Delete") {
-            deletePost(currentPost);
-            e.preventDefault();
-        }
-    });
-
-    const deletePost = async (post: any) => {
-        await postClient.deletePost(post._id + "");
-        const actions_dd = document.getElementById("pazza-post-actions-dd") as HTMLSelectElement;
-        if (actions_dd) {
-            actions_dd.value = "Actions";
-        }
-        fetchPosts();
-        navigate("../../");
-    }
-
-    const editPost = (post: any) => {
-        if (currentUser._id !== post.createdBy && !["FACULTY", "TA", "ADMIN"].includes(currentUser.role + "")) {
-            return;
-        }
-        const actions_dd = document.getElementById("pazza-post-actions-dd") as HTMLSelectElement;
-        if (actions_dd) {
-            actions_dd.value = "Actions";
-        }
-        navigate("edit");
-    }
 
     return (
         <div>
@@ -187,44 +150,7 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: a
                     </div>
                 </div>
             </div>
-            {/* Post body */}
-            {/* TODO: actually make this work */}
-            {(currentUser._id === currentPost.createdBy || ["FACULTY", "TA", "ADMIN"].includes(currentUser.role + "")) &&
-                <div className="d-flex justify-content-end me-2">
-                    <select id="pazza-post-actions-dd" name="Actions"
-                        defaultValue={"Actions"}>
-                        <option>Actions</option>
-                        <option>Edit</option>
-                        <option onClick={() => console.log("Deleting")}>Delete</option>
-                    </select>
-                </div>
-            }
-            <div className="px-3 py-3">
-                <h1>{currentPost.title}</h1>
-                <div style={{ wordWrap: "break-word", whiteSpace: "pre-wrap", maxWidth: "800px"}}
-                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentPost.content) }} />
-            </div>
-            {/* Post tags */}
-            <div className="m-3" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {postTags.map((t: any) => {
-                    return (
-                        <div
-                            key={t._id}
-                            className="pazza-light-blue pazza-blue-text"
-                            style={{
-                                padding: "4px 10px",
-                                borderRadius: "20px",
-                                fontSize: "0.9rem",
-                                fontWeight: "500",
-                                whiteSpace: "nowrap",
-                            }}
-                        >
-                            {t.name}
-                        </div>
-                    );
-                })}
-            </div>
-            {/* Bottom bar */}
+            {/* Student answer section */}
             <div
                 className="pazza-white-background my-2 mx-2"
                 style={{
@@ -235,9 +161,14 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: a
             >
                 {/* Top bar */}
                 <div
-                    className="pazza-blue-background text-white px-3 py-2 rounded text-nowrap"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => editPost(currentPost)}
+                    style={{
+                        width: "100%",
+                        borderBottom: "1px solid darkGrey",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                    className="p-1"
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <div className="ms-2"><StudentIcon /></div>
@@ -246,9 +177,9 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: a
                     </div>
                 </div>
                 {/* Body */}
-                Placeholder
+                <Answer post={currentPost} instructor={false} />
             </div>
-            {/* TODO: instructor answer section component goes here */}
+            {/* Instructor answer section */}
             <div
                 className="pazza-white-background my-2 mx-2"
                 style={{
@@ -275,9 +206,9 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: a
                     </div>
                 </div>
                 {/* Body */}
-                Placeholder
+                <Answer post={currentPost} instructor={true} />
             </div>
-            {/* TODO: followup discussion section component goes here */}
+            {/* Followup discussion section */}
             <div
                 className="pazza-white-background my-2 mx-2"
                 style={{

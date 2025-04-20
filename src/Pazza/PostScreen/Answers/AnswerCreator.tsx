@@ -3,21 +3,21 @@ import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { Button } from "react-bootstrap";
 
-export default function DiscussionPostCreator({
+export default function AnswerCreator({
         onCancel,
         onSubmit,
-        discussionPost,
+        answer,
 }: {
         onCancel: () => void;
         onSubmit: (content: string) => void;
-        discussionPost?: any,
+        answer?: any,
 }) {
     const editorRef = useRef<HTMLDivElement | null>(null);
     const quillInstance = useRef<Quill | null>(null);
     const [content, setContent] = useState('');
 
     useEffect(() => {
-        console.log(discussionPost.content);
+        console.log(answer?.content);
         if (editorRef.current && !editorRef.current.firstChild) {
             quillInstance.current = new Quill(editorRef.current, {
                 modules: {

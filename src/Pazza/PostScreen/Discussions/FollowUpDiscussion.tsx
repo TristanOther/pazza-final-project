@@ -48,7 +48,7 @@ export default function FollowUpDiscussion({ post }: { post: any }) {
         await loadDiscussion();
     }
 
-    const editDiscussionPost = async (dp: string) => {
+    const editDiscussionPost = async (dp: any) => {
         await discussionPostClient.updateDiscussionPost(dp);
         await loadDiscussion();
     }
