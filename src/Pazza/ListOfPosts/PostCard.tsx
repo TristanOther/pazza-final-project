@@ -36,7 +36,7 @@ export default function PostCard({ id, title, content, createdAt, instructor, re
                     {instructor && <span className="me-1"><InstructorTag /></span>}
                     <span className="fw-semibold fs-6">{shortenText(title, 30)}</span >
                 </div>
-                <p className="mb-0 text-secondary">{humanReadable(shortenText(content, 130))}</p>
+                <p className="mb-0 text-secondary" style={{ maxWidth: "15vw" }}>{humanReadable(shortenText(content, 130))}</p>
             </div>
             <span className="text-muted ms-auto me-2 mt-1">{new Date(createdAt).toLocaleDateString()}</span>
         </div>
