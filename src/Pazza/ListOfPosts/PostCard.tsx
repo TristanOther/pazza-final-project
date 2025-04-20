@@ -20,7 +20,13 @@ function shortenText(text: string, length: number) {
 function humanReadable(text: string) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(text, "text/html");
-  return doc.body.textContent || "";
+  const rawText = doc.body.textContent || "";
+
+  // Collapse multiple spaces and trim leading spaces per line
+  return rawText
+    .split('\n')
+    .map(line => line.replace(/\s+/g, ' ').trimStart())
+    .join('\n');
 }
 
 export default function PostCard({ id, title, content, createdAt, instructor, readBy }: props) {
@@ -36,7 +42,7 @@ export default function PostCard({ id, title, content, createdAt, instructor, re
                     {instructor && <span className="me-1"><InstructorTag /></span>}
                     <span className="fw-semibold fs-6">{shortenText(title, 30)}</span >
                 </div>
-                <p className="mb-0 text-secondary" style={{ maxWidth: "15vw" }}>{humanReadable(shortenText(content, 130))}</p>
+                <p className="mb-0 text-secondary" style={{ maxWidth: "15vw", wordBreak: "break-word", whiteSpace: "pre-line" }}>{humanReadable(shortenText(content, 150))}</p>
             </div>
             <span className="text-muted ms-auto me-2 mt-1">{new Date(createdAt).toLocaleDateString()}</span>
         </div>
