@@ -1,5 +1,8 @@
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router";
+import { Routes, useLocation, useNavigate } from "react-router";
+import { Route } from "react-router-dom";
+import ManageFolders from "./ManageFolders";
+import PazzaProtectedRoute from "../PazzaProtectedRoute";
 
 export default function ManageClass() {
 
@@ -14,17 +17,32 @@ export default function ManageClass() {
         { name: "Piazza Network Settings", path: "" },
     ];
 
+    const currentTab = useLocation().pathname.split("/").pop();
 
     return (
-        <div className="d-flex pazza-grey-background justify-content-between pe-5 ps-5" style={{ width: "100%" }}>
-            {tabs.map((tab: any) => (
-                <div>
-                    <Button className="text-nowrap" type="button" variant="link" style={{ textDecoration: "none", color: "black" }} 
-                        onClick={() => navigate(tab.path)}>
-                        {tab.name}
-                    </Button>
-                </div>
-            ))}
+        <div>
+            <div className="d-flex pazza-grey-background justify-content-between pe-5 ps-5" style={{ width: "100%" }}>
+                {tabs.map((tab: any) => (
+                    <div>
+                        <Button
+                            className={`text-nowrap ${currentTab === tab.path ? "text-decoration-underline" : ""}`}
+                            type="button"
+                            variant="link"
+                            style={{ textDecoration: "none", color: "black" }}
+                            onClick={() => navigate(tab.path)}>
+                            {tab.name}
+                        </Button>
+                    </div>
+                ))}
+            </div>
+            <div style={{ width: "100%" }}> 
+                <Routes>
+                    <Route path="/Folders" element={
+                        <PazzaProtectedRoute>
+                            <ManageFolders />
+                        </PazzaProtectedRoute>} />
+                </Routes>
+            </div>
         </div>
     );
 }

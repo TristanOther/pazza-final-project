@@ -15,7 +15,7 @@ export default function ManageFolders() {
         const tags = await TagsClient.fetchTags(cid ? cid : "");
         dispatch(setTags(tags));
     };
-    const folders = useSelector((state: any) => state.tagsReducer.tags);
+    const folders = [...useSelector((state: any) => state.tagsReducer.tags)].sort((a: any, b: any) => a.priority - b.priority);
     const updateButtonState = () => {
         const button = document.getElementById("pazza-folder-deleter-button") as HTMLButtonElement;
         const checked = folders.some((folder: any) => {
@@ -46,7 +46,7 @@ export default function ManageFolders() {
 
     return (
         <div className="pazza-grey-background pb-2" style={{ width: "100%" }}>
-            <hr style={{ height: "5px", backgroundColor: "black", border: "none", width: "100%" }} />
+            {/* <hr style={{ height: "5px", backgroundColor: "black", border: "none", width: "100%" }} /> */}
             <h3 className="ms-3 mt-3"><strong>Configure Class Folders</strong></h3>
             <span className="ms-3">
                 Folders allow you to organize your classes into different categories.
@@ -65,7 +65,8 @@ export default function ManageFolders() {
                         if (newFolder == "") {
                             return;
                         } else {
-                            TagsClient.createTag({ name: newFolder }, cid ? cid : "").then(() => {
+                            const maxPriority = folders.length > 0 ? Math.max(...folders.map((f: any) => f.priority)) : 0;
+                            TagsClient.createTag({ name: newFolder, priority: maxPriority + 1 }, cid ? cid : "").then(() => {
                                 fetchTags();
                                 setNewFolder("");
                             });
