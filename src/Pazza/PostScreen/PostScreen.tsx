@@ -145,7 +145,7 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
                     <h1>{currentPost.title}</h1>
                     <div
                         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentPost.content) }}
-                        style={{ maxWidth: "800px", wordWrap: "break-word", whiteSpace: "pre-wrap" }}
+                        style={{ wordWrap: "break-word", whiteSpace: "pre-wrap" }}
                     />
                 </div>
                 {/* Post tags */}
