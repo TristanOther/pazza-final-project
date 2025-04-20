@@ -1,29 +1,14 @@
 import DOMPurify from 'dompurify';
-import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import DiscussionPostCreator from './DiscussionPostCreator';
+import { useState } from 'react';
+import ReplyCreator from '../ReplyCreator';
+import ActionsDropdown from '../ActionsDropdown';
 
-export default function DiscussionPost({ discussionPost, deleteDiscussionPost, editDiscussionPost }: {
+export default function DiscussionPost({ discussionPost, deleteDiscussionPost, editDiscussionPost }: { 
     discussionPost: any,
     deleteDiscussionPost: (dpid: string) => void,
     editDiscussionPost: (dp: any) => void,
 }) {
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
-    const [showDropdown, setShowDropdown] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement | null>(null);
     const [editing, setEditing] = useState<boolean>(false);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setShowDropdown(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
 
     return (
         <div className="ms-2">
@@ -43,37 +28,7 @@ export default function DiscussionPost({ discussionPost, deleteDiscussionPost, e
                     </span>
                 </div>
                 {/* Actions dropdown */}
-                {(discussionPost.createdBy === currentUser._id || ["ADMIN", "FACULTY", "TA"].includes(currentUser.role)) && (
-                    <div ref={dropdownRef} className="position-relative">
-                        <div
-                            className="pazza-blue-text me-1"
-                            onClick={() => setShowDropdown(prev => !prev)}
-                        >
-                            Actions {showDropdown ? "▴" : "▾"}
-                        </div>
-                        {showDropdown && (
-                            <div
-                                className="position-absolute pazza-white-background border shadow-sm"
-                                style={{ right: 0, top: '100%', zIndex: 1000 }}
-                            >
-                                <div
-                                    className="px-2 py-1 border-bottom"
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => setEditing(true)}
-                                >
-                                    Edit
-                                </div>
-                                <div
-                                    className="px-2 py-1 text-danger"
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => deleteDiscussionPost(discussionPost._id)}
-                                >
-                                    Delete
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                )}
+                <ActionsDropdown object={discussionPost} deleteObject={deleteDiscussionPost} setEditing={setEditing} />
             </div>
             {/* Content */}
             {!editing && (
@@ -81,13 +36,13 @@ export default function DiscussionPost({ discussionPost, deleteDiscussionPost, e
             )}
             {/* Editor */}
             {editing && (
-                <DiscussionPostCreator
-                    onCancel={() => setEditing(false)}
+                <ReplyCreator 
+                    onCancel={() => setEditing(false)} 
                     onSubmit={(content) => {
-                            editDiscussionPost({ ...discussionPost, content });
+                        editDiscussionPost({...discussionPost, content});
                         setEditing(false);
                     }}
-                    discussionPost={discussionPost}
+                    object={discussionPost}
                 />
             )}
         </div>

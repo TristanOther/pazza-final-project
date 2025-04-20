@@ -1,17 +1,16 @@
-// DiscussionPostCreator.tsx
 import { useRef, useEffect, useState } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { Button } from "react-bootstrap";
 
-export default function DiscussionPostCreator({
+export default function ReplyCreator({
     onCancel,
     onSubmit,
-    discussionPost,
+    object,
 }: {
     onCancel: () => void;
     onSubmit: (content: string) => void;
-    discussionPost?: any,
+    object?: any,
 }) {
     const editorRef = useRef<HTMLDivElement | null>(null);
     const quillInstance = useRef<Quill | null>(null);
@@ -35,8 +34,8 @@ export default function DiscussionPostCreator({
                 setContent(quillInstance.current?.getText() ?? "");
             });
 
-            if (quillInstance.current && discussionPost) {
-                quillInstance.current?.clipboard.dangerouslyPasteHTML(discussionPost.content);
+            if (quillInstance.current && object) {
+                quillInstance.current?.clipboard.dangerouslyPasteHTML(object.content);
             }
         }
     }, []);

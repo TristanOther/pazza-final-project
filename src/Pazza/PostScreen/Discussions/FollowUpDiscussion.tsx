@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import * as discussionPostClient from "./DiscussionPostClient.ts";
 import * as userClient from '../../../Kambaz/Account/client.ts';
-import DiscussionPost from "./DiscussionPost.tsx";
-import DiscussionPostCreator from "./DiscussionPostCreator.tsx";
+import DiscussionPost from "./DiscussionPost";
+import ReplyCreator from "../ReplyCreator";
 import { useSelector } from "react-redux";
 
 export default function FollowUpDiscussion({ post }: { post: any }) {
@@ -48,7 +48,7 @@ export default function FollowUpDiscussion({ post }: { post: any }) {
         await loadDiscussion();
     }
 
-    const editDiscussionPost = async (dp: string) => {
+    const editDiscussionPost = async (dp: any) => {
         await discussionPostClient.updateDiscussionPost(dp);
         await loadDiscussion();
     }
@@ -132,7 +132,7 @@ export default function FollowUpDiscussion({ post }: { post: any }) {
                                 )}
                                 {currentReplyField === dp._id && (
                                     <div className="mt-2 mx-2">
-                                        <DiscussionPostCreator 
+                                        <ReplyCreator 
                                             onCancel={() => setCurrentReplyField('')}
                                             onSubmit={(content) => createDiscussionPost(content, dp._id, false)}
                                         />
@@ -157,7 +157,7 @@ export default function FollowUpDiscussion({ post }: { post: any }) {
                 )}
                 {currentReplyField === post._id && (
                     <div className="mt-2 mx-2">
-                        <DiscussionPostCreator 
+                        <ReplyCreator 
                             onCancel={() => setCurrentReplyField('')}
                             onSubmit={(content) => createDiscussionPost(content, post._id, false)}
                         />
