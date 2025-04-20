@@ -1,6 +1,7 @@
 import ListOfPostsToolbar from "./ListOfPostsToolbar";
 import PostGroup from "./PostGroup";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 interface props {
     posts?: any[]; // ideally replace `any` with a proper type
@@ -52,12 +53,13 @@ function groupPostsByDate(posts: any[]) {
     return groups;
 }
 
-export default function ListOfPostsSidebar({ posts }: props) {    
+export default function ListOfPostsSidebar({ posts }: props) {
     if (!posts) posts = [];
-    
-    const [searchTerm, setSearchTerm] = useState<string>("");
 
-    // Filter posts based on the search term.
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const selected_folder = useSelector((state: any) => state.tagsReducer.selectedTag)
+
+    // Filter posts based on the search term and selected folder, if any.
     const filteredPosts = posts.filter((post) => {
         // Check if the post has a title and content before accessing them.
         if (!post.title || !post.content) return false;
@@ -65,7 +67,12 @@ export default function ListOfPostsSidebar({ posts }: props) {
         const title = post.title.toLowerCase();
         const body = post.content.toLowerCase();
         const search = searchTerm.toLowerCase();
-        return title.includes(search) || body.includes(search);
+
+        if (selected_folder) {
+            return (title.includes(search) || body.includes(search)) && post.tags.includes(selected_folder._id);
+        } else {
+            return (title.includes(search) || body.includes(search));
+        }
     });
 
     // Group posts by their creation date.
@@ -76,13 +83,13 @@ export default function ListOfPostsSidebar({ posts }: props) {
             if (label === "Today") return Date.now();
             if (label === "Yesterday") return Date.now() - 1000 * 60 * 60 * 24;
             if (label === "Last Week") return Date.now() - 1000 * 60 * 60 * 24 * 7;
-    
+
             const [start] = label.split(" - ");
             const [month, day] = start.split("/").map(Number);
             const date = new Date(new Date().getFullYear(), month - 1, day);
             return date.getTime();
         };
-    
+
         return labelWeight(b) - labelWeight(a);
     });
 
