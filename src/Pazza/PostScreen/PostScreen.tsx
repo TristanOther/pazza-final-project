@@ -4,11 +4,12 @@ import { BsFillExclamationSquareFill, BsQuestionSquareFill } from "react-icons/b
 import { useSelector } from "react-redux";
 import DOMPurify from 'dompurify';
 import FollowUpDiscussion from "./Discussions/FollowUpDiscussion.tsx";
+import { current } from "@reduxjs/toolkit";
+import Answer from "./Answers/AnswerSection.tsx";
 
 import * as postClient from './PostClient.ts';
 import * as userClient from '../../Kambaz/Account/client.ts';
 import StudentIcon from "./StudentIcon.tsx";
-import { current } from "@reduxjs/toolkit";
 
 export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: () => Promise<void>, markPostRead: (pid: string, uid: string) => void }) {
     const { postId } = useParams();
@@ -49,7 +50,6 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
         }
         fetchTags();
     }, [tags, currentPost.tags]);
-
 
     var actions_dd = document.getElementById("pazza-post-actions-dd") as HTMLSelectElement;
     actions_dd?.addEventListener("change", (e) => {
@@ -204,6 +204,7 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
             {/* Bottom bar */}
             {currentPost.postType === "questionPost" && (
                 <>
+                    {/* Student answer section */}
                     <div
                         className="pazza-white-background my-2 mx-2"
                         style={{
@@ -214,9 +215,14 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
                     >
                         {/* Top bar */}
                         <div
-                            className="pazza-blue-background text-white px-3 py-2 rounded text-nowrap"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => editPost(currentPost)}
+                            style={{
+                                width: "100%",
+                                borderBottom: "1px solid darkGrey",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                            }}
+                            className="p-1"
                         >
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <div className="ms-2"><StudentIcon /></div>
@@ -225,8 +231,9 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
                             </div>
                         </div>
                         {/* Body */}
-                        Placeholder
+                        <Answer post={currentPost} instructor={false} />
                     </div>
+                    {/* Instructor answer section */}
                     <div
                         className="pazza-white-background my-2 mx-2"
                         style={{
@@ -253,10 +260,10 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
                             </div>
                         </div>
                         {/* Body */}
-                        Placeholder
+                        <Answer post={currentPost} instructor={true} />
                     </div>
                 </>)}
-            {/* TODO: followup discussion section component goes here */}
+            {/* Followup discussion section */}
             <div
                 className="pazza-white-background my-2 mx-2"
                 style={{

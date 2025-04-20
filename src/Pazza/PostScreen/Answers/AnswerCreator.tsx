@@ -3,40 +3,37 @@ import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { Button } from "react-bootstrap";
 
-export default function DiscussionPostCreator({
-    onCancel,
-    onSubmit,
-    discussionPost,
+export default function AnswerCreator({
+        onCancel,
+        onSubmit,
+        answer,
 }: {
-    onCancel: () => void;
-    onSubmit: (content: string) => void;
-    discussionPost?: any,
+        onCancel: () => void;
+        onSubmit: (content: string) => void;
+        answer?: any,
 }) {
     const editorRef = useRef<HTMLDivElement | null>(null);
     const quillInstance = useRef<Quill | null>(null);
     const [content, setContent] = useState('');
 
     useEffect(() => {
+        console.log(answer?.content);
         if (editorRef.current && !editorRef.current.firstChild) {
             quillInstance.current = new Quill(editorRef.current, {
                 modules: {
                     toolbar: [
-                        [{ header: [1, 2, false] }],
-                        ["bold", "italic", "underline"],
-                        ["link", "image", "code-block"],
+                    [{ header: [1, 2, false] }],
+                    ["bold", "italic", "underline"],
+                    ["link", "image", "code-block"],
                     ],
                 },
                 placeholder: "Write your reply...",
                 theme: "snow",
             });
 
-            quillInstance.current?.on("text-change", () => {
-                setContent(quillInstance.current?.getText() ?? "");
+            quillInstance.current.on("text-change", () => {
+            setContent(quillInstance.current?.getText() ?? "");
             });
-
-            if (quillInstance.current && discussionPost) {
-                quillInstance.current?.clipboard.dangerouslyPasteHTML(discussionPost.content);
-            }
         }
     }, []);
 
