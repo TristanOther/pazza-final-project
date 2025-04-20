@@ -17,7 +17,7 @@ export default function FileFolderNavigation() {
     }
 
     return (
-        <div className="d-flex pazza-grey-background" style={{ width: "100%" }}>
+        <div className="d-flex pazza-dark-grey-background" style={{ width: "100%" }}>
             {folders.map((folder: any) => (
                 <div>
                     <FaFolder className="fs-5 ms-3" key={folder.name} />
@@ -28,7 +28,7 @@ export default function FileFolderNavigation() {
                 </div>
             ))}
             {folders.length == 0 && (
-                <div className="d-flex justify-content-start align-items-start mt-2 ms-2" style={{ width: "100%", height: "100%" }}>
+                <div className="d-flex pazza-dark-grey-background justify-content-start align-items-start mt-2 ms-2" style={{ width: "100%", height: "100%" }}>
                     <h6 className="text-center pazza-create-text">No folders available</h6>
                 </div>
             )}

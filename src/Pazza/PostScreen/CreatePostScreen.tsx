@@ -88,7 +88,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
             }
 
             setSummary(post.title);
-            setSelectedFolders(post.tags.map((tag_id: any) => (folders.find((folder: any) => folder._id === tag_id)).name));
+            setSelectedFolders(post.tags.map((tag_id: any) => (folders.find((folder: any) => folder._id === tag_id))?.name));
             if (postToVal === "INDV") {
                 const selectedUsers = post.viewableBy.map((userID: string) => {
                     if (userID === "INSTRUCTORS") {
@@ -197,7 +197,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                     Details
                 </span>
             </div>
-            <div id="editor" style={{ height: "200px", maxWidth: "800px", backgroundColor: "white" }} ref={quillRef} />
+            <div id="editor" style={{ height: "200px", backgroundColor: "white" }} ref={quillRef} />
             <div>
                 {(selectedFolders.length == 0) && (
                     <>
@@ -244,6 +244,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                             content: quillInstance.current?.getSemanticHTML(),
                             createdBy: currentUser._id,
                             viewableBy: postTo != "ALL" ? selectedUsers.filter((user: any) => user).map((user: any) => user.id != -1 ? user.id + "" : "INSTRUCTORS") : ["ALL"],
+                            instructor: ["FACULTY",  "TA", "ADMIN"].includes(currentUser.role),
                         };
 
                         const post_promise = newPost ? postClient.createPost(post, cid ? cid : "") : postClient.updatePost({ _id: postId, ...post });

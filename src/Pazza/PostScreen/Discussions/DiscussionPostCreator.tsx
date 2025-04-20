@@ -4,36 +4,39 @@ import "quill/dist/quill.snow.css";
 import { Button } from "react-bootstrap";
 
 export default function DiscussionPostCreator({
-        onCancel,
-        onSubmit,
-        discussionPost,
+    onCancel,
+    onSubmit,
+    discussionPost,
 }: {
-        onCancel: () => void;
-        onSubmit: (content: string) => void;
-        discussionPost?: any,
+    onCancel: () => void;
+    onSubmit: (content: string) => void;
+    discussionPost?: any,
 }) {
     const editorRef = useRef<HTMLDivElement | null>(null);
     const quillInstance = useRef<Quill | null>(null);
     const [content, setContent] = useState('');
 
     useEffect(() => {
-        console.log(discussionPost.content);
         if (editorRef.current && !editorRef.current.firstChild) {
             quillInstance.current = new Quill(editorRef.current, {
                 modules: {
                     toolbar: [
-                    [{ header: [1, 2, false] }],
-                    ["bold", "italic", "underline"],
-                    ["link", "image", "code-block"],
+                        [{ header: [1, 2, false] }],
+                        ["bold", "italic", "underline"],
+                        ["link", "image", "code-block"],
                     ],
                 },
                 placeholder: "Write your reply...",
                 theme: "snow",
             });
 
-            quillInstance.current.on("text-change", () => {
-            setContent(quillInstance.current?.getText() ?? "");
+            quillInstance.current?.on("text-change", () => {
+                setContent(quillInstance.current?.getText() ?? "");
             });
+
+            if (quillInstance.current && discussionPost) {
+                quillInstance.current?.clipboard.dangerouslyPasteHTML(discussionPost.content);
+            }
         }
     }, []);
 

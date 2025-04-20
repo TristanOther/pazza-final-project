@@ -25,24 +25,24 @@ export default function Pazza() {
     }, [cid, dispatch]);
 
     return (
-        <div id="wd-pazza-q-and-a">
-            <div className="mx-3 my-3">
-                <div style={{ width: "100%" }}>
-                    <PazzaNavigation />
-                </div>
-                <Routes>
-                    <Route path="/*" element={<Posts />} />
-                    <Route path="/Manage" element={
-                        <PazzaProtectedRoute>
-                            <ManageClass />
-                        </PazzaProtectedRoute>} />
-                    <Route path="/Manage/Folders" element={
-                        <PazzaProtectedRoute>
-                            <ManageFolders />
-                        </PazzaProtectedRoute>} />
-                    <Route path="Statistics" element={<Statistics />} />
-                    <Route path="Resources" element={<Resources />} />
-                </Routes>
+        <div id="wd-pazza-q-and-a" style={{ width: "82vw", height: "82vh" }}>
+            <div className="mx-3 my-3" style={{ width: "100%", height: "100%" }}>
+            <div style={{ width: "100%" }}>
+                <PazzaNavigation />
+            </div>
+            <Routes>
+                <Route path="/*" element={<Posts />} />
+                <Route path="/Manage" element={
+                <PazzaProtectedRoute>
+                    <ManageClass />
+                </PazzaProtectedRoute>} />
+                <Route path="/Manage/Folders" element={
+                <PazzaProtectedRoute>
+                    <ManageFolders />
+                </PazzaProtectedRoute>} />
+                <Route path="Statistics" element={<Statistics />} />
+                <Route path="Resources" element={<Resources />} />
+            </Routes>
             </div>
         </div>
     );

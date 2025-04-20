@@ -4,13 +4,14 @@ import { BsFillExclamationSquareFill, BsQuestionSquareFill } from "react-icons/b
 import { useSelector } from "react-redux";
 import DOMPurify from 'dompurify';
 import FollowUpDiscussion from "./Discussions/FollowUpDiscussion.tsx";
+import { current } from "@reduxjs/toolkit";
+import Answer from "./Answers/AnswerSection.tsx";
 
 import * as postClient from './PostClient.ts';
 import * as userClient from '../../Kambaz/Account/client.ts';
 import StudentIcon from "./StudentIcon.tsx";
-import Answer from "./Answers/AnswerSection.tsx";
 
-export default function PostScreen({ markPostRead }: { markPostRead: (pid: string, uid: string) => void }) {
+export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: () => Promise<void>, markPostRead: (pid: string, uid: string) => void }) {
     const { postId } = useParams();
     const navigate = useNavigate();
     const { tags } = useSelector((state: any) => state.tagsReducer);
@@ -50,6 +51,43 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
         fetchTags();
     }, [tags, currentPost.tags]);
 
+    var actions_dd = document.getElementById("pazza-post-actions-dd") as HTMLSelectElement;
+    actions_dd?.addEventListener("change", (e) => {
+        // the interpreter hates this, but it seems to work, so.....
+
+        if (document.activeElement !== actions_dd) return;
+        const target = e.target as HTMLSelectElement;
+        if (target?.value === "Actions") return;
+        if (target?.value === "Edit") {
+            editPost(currentPost);
+            e.preventDefault();
+        } else if (target?.value === "Delete") {
+            deletePost(postId);
+            e.preventDefault();
+        }
+    });
+
+    const deletePost = async (post_id: string | undefined) => {
+        await postClient.deletePost(post_id ? post_id : "");
+        const actions_dd = document.getElementById("pazza-post-actions-dd") as HTMLSelectElement;
+        if (actions_dd) {
+            actions_dd.value = "Actions";
+        }
+        fetchPosts();
+        navigate("../../");
+    }
+
+    const editPost = (post: any) => {
+        if (currentUser._id !== post.createdBy && !["FACULTY", "TA", "ADMIN"].includes(currentUser.role + "")) {
+            return;
+        }
+        const actions_dd = document.getElementById("pazza-post-actions-dd") as HTMLSelectElement;
+        if (actions_dd) {
+            actions_dd.value = "Actions";
+        }
+        navigate("edit");
+    }
+
     return (
         <div>
             {/* Main post body */}
@@ -74,7 +112,7 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <BsQuestionSquareFill className="fs-2 ms-1" />
-                        <span className="fw-bold fs-5 ms-2">question @{postId}</span>
+                        <span className="fw-bold fs-5 ms-2">{currentPost.postType === "questionPost" ? "question" : "note"} @{postId}</span>
                     </div>
                     <div
                         style={{
@@ -92,10 +130,23 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
                         <span style={{ fontWeight: "bold" }}>views</span>
                     </div>
                 </div>
+                {(currentUser._id === currentPost.createdBy || ["FACULTY", "TA", "ADMIN"].includes(currentUser.role + "")) &&
+                    <div className="d-flex justify-content-end me-2">
+                        <select id="pazza-post-actions-dd" name="Actions"
+                            defaultValue={"Actions"}>
+                            <option>Actions</option>
+                            <option>Edit</option>
+                            <option>Delete</option>
+                        </select>
+                    </div>
+                }
                 {/* Post body */}
                 <div className="px-3 py-3">
                     <h1>{currentPost.title}</h1>
-                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentPost.content) }} />
+                    <div
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentPost.content) }}
+                        style={{ wordWrap: "break-word", whiteSpace: "pre-wrap" }}
+                    />
                 </div>
                 {/* Post tags */}
                 <div className="m-3" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -131,7 +182,7 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
                     <div
                         className="pazza-blue-background text-white px-3 py-2 rounded text-nowrap"
                         style={{ cursor: "pointer" }}
-                        onClick={() => navigate(`edit`)}
+                        onClick={() => editPost(currentPost)}
                     >
                         Edit
                     </div>
@@ -150,64 +201,68 @@ export default function PostScreen({ markPostRead }: { markPostRead: (pid: strin
                     </div>
                 </div>
             </div>
-            {/* Student answer section */}
-            <div
-                className="pazza-white-background my-2 mx-2"
-                style={{
-                    border: "1px solid darkGrey",
-                    borderRadius: "5px",
-                    boxSizing: "border-box",
-                }}
-            >
-                {/* Top bar */}
-                <div
-                    style={{
-                        width: "100%",
-                        borderBottom: "1px solid darkGrey",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                    }}
-                    className="p-1"
-                >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <div className="ms-2"><StudentIcon /></div>
-                        <span className="fw-bold fs-5 mx-2">the students' answer,</span>
-                        <span className="fst-italic fs-7">where students collectively construct a single answer</span>
+            {/* Bottom bar */}
+            {currentPost.postType === "questionPost" && (
+                <>
+                    {/* Student answer section */}
+                    <div
+                        className="pazza-white-background my-2 mx-2"
+                        style={{
+                            border: "1px solid darkGrey",
+                            borderRadius: "5px",
+                            boxSizing: "border-box",
+                        }}
+                    >
+                        {/* Top bar */}
+                        <div
+                            style={{
+                                width: "100%",
+                                borderBottom: "1px solid darkGrey",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                            }}
+                            className="p-1"
+                        >
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <div className="ms-2"><StudentIcon /></div>
+                                <span className="fw-bold fs-5 mx-2">the students' answer,</span>
+                                <span className="fst-italic fs-7">where students collectively construct a single answer</span>
+                            </div>
+                        </div>
+                        {/* Body */}
+                        <Answer post={currentPost} instructor={false} />
                     </div>
-                </div>
-                {/* Body */}
-                <Answer post={currentPost} instructor={false} />
-            </div>
-            {/* Instructor answer section */}
-            <div
-                className="pazza-white-background my-2 mx-2"
-                style={{
-                    border: "1px solid darkGrey",
-                    borderRadius: "5px",
-                    boxSizing: "border-box",
-                }}
-            >
-                {/* Top bar */}
-                <div
-                    style={{
-                        width: "100%",
-                        borderBottom: "1px solid darkGrey",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                    }}
-                    className="p-1"
-                >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <BsFillExclamationSquareFill style={{ transform: "scaleY(-1)" }} className="pazza-instructor-text fs-2 ms-3" />
-                        <span className="fw-bold fs-5 mx-2">the instructors' answer,</span>
-                        <span className="fst-italic fs-7">where instructors collectively construct a single answer</span>
+                    {/* Instructor answer section */}
+                    <div
+                        className="pazza-white-background my-2 mx-2"
+                        style={{
+                            border: "1px solid darkGrey",
+                            borderRadius: "5px",
+                            boxSizing: "border-box",
+                        }}
+                    >
+                        {/* Top bar */}
+                        <div
+                            style={{
+                                width: "100%",
+                                borderBottom: "1px solid darkGrey",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                            }}
+                            className="p-1"
+                        >
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <BsFillExclamationSquareFill style={{ transform: "scaleY(-1)" }} className="pazza-instructor-text fs-2 ms-3" />
+                                <span className="fw-bold fs-5 mx-2">the instructors' answer,</span>
+                                <span className="fst-italic fs-7">where instructors collectively construct a single answer</span>
+                            </div>
+                        </div>
+                        {/* Body */}
+                        <Answer post={currentPost} instructor={true} />
                     </div>
-                </div>
-                {/* Body */}
-                <Answer post={currentPost} instructor={true} />
-            </div>
+                </>)}
             {/* Followup discussion section */}
             <div
                 className="pazza-white-background my-2 mx-2"
