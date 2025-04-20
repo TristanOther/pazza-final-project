@@ -142,7 +142,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                     </h6>
                     <div className="d-flex ms-5 align-items-center" style={{ width: "100%" }}>
                         <label className="d-flex me-3 align-items-center" htmlFor="postToAll">
-                            <input type="radio" id="postToAll" name="postTo" value="all" className="p-2" onClick={() => setPostTo("ALL")} />
+                            <input type="radio" id="postToAll" name="postTo" value="all" className="p-2" defaultChecked={true} onClick={() => setPostTo("ALL")} />
                             <h6 className="ms-2 mt-1 pazza-create-text">Entire Class</h6>
                         </label>
                         <label className="d-flex me-3 align-items-center" htmlFor="postToIndv">
@@ -182,7 +182,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                     )}
                 </div>
                 {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") &&
-                    <a className="me-2 ms-5 ps-5" href={"/#" + useLocation().pathname.split("/").slice(0, -2).join("/") + "/Manage"}>
+                    <a className="me-2 ms-5 ps-5" href={"/#" + useLocation().pathname.split("/").slice(0, -2).join("/") + "/Manage/Folders"}>
                         Manage and reorder folders
                     </a>}
                 <br />
@@ -262,7 +262,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
 
                             // redirect to the new post
                             if (newPost) {
-                                var post_redirect = window.location.href.split("/").slice(0, -1);
+                                const post_redirect = window.location.href.split("/").slice(0, -1);
                                 post_redirect.push(res._id + "");
                                 window.location.href = post_redirect.join("/");
                             } else {

@@ -23,7 +23,7 @@ export default function Posts() {
             } else {
                 // filter out posts that are not visible to the current user
                 const filtered_posts = posts.filter((post: any) => {
-                    return post.viewableBy.includes("ALL") || post.viewableBy.includes(currentUser._id + "") || (post.viewableBy.includes("INSTRUCTORS") && (currentUser.role === "FACULTY" || currentUser.role === "TA"));
+                    return post.viewableBy.includes("ALL") || post.viewableBy.includes(currentUser._id + "") || (post.viewableBy.includes("INSTRUCTORS") && (["ADMIN", "FACULTY", "TA"].includes(currentUser.role)));
                 });
                 filtered_posts.sort(
                     (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
