@@ -1,15 +1,21 @@
 .pazza-blue-background { background-color: #3a73a1; }
-.pazza-grey-background  { background-color: #f0f0f5; }
+.pazza-crimson-background { background-color: #b02f0e; }
 .pazza-dark-grey-background { background-color: #dbdbdb; }
 .pazza-darker-grey-background { background-color: #999999; }
+.pazza-darkest-grey-background { background-color: #444444; }
+.pazza-grey-background  { background-color: #f0f0f5; }
+.pazza-instructor-background { background-color:#f8b01e; }
 .pazza-white-background  { background-color: #ffffff; }
 .pazza-yellow-background { background-color: #fff9c4; }
 
 .pazza-grey-border { border-color: #a9a9a9; }
 
 .pazza-blue-text { color: #3a73a1; }
-.pazza-grey-text { color: #999999; }
 .pazza-crimson-text { color: #b02f0e; }
+.pazza-grey-text { color: #999999; }
+.pazza-instructor-text { color:#f8b01e; }
+.pazza-student-text { color: #5abd55;}
+.pazza-white-text  { color: #ffffff; }
 
 .pazza-light-blue {
     background-color: lightblue;
