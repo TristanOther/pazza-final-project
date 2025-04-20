@@ -8,6 +8,7 @@ import FollowUpDiscussion from "./Discussions/FollowUpDiscussion.tsx";
 import * as postClient from './PostClient.ts';
 import * as userClient from '../../Kambaz/Account/client.ts';
 import StudentIcon from "./StudentIcon.tsx";
+import { current } from "@reduxjs/toolkit";
 
 export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: () => Promise<void>, markPostRead: (pid: string, uid: string) => void }) {
     const { postId } = useParams();
@@ -111,7 +112,7 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <BsQuestionSquareFill className="fs-2 ms-1" />
-                        <span className="fw-bold fs-5 ms-2">question @{postId}</span>
+                        <span className="fw-bold fs-5 ms-2">{currentPost.postType === "questionPost" ? "question" : "note"} @{postId}</span>
                     </div>
                     <div
                         style={{
@@ -201,58 +202,60 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
                 </div>
             </div>
             {/* Bottom bar */}
-            <div
-                className="pazza-white-background my-2 mx-2"
-                style={{
-                    border: "1px solid darkGrey",
-                    borderRadius: "5px",
-                    boxSizing: "border-box",
-                }}
-            >
-                {/* Top bar */}
-                <div
-                    className="pazza-blue-background text-white px-3 py-2 rounded text-nowrap"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => editPost(currentPost)}
-                >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <div className="ms-2"><StudentIcon /></div>
-                        <span className="fw-bold fs-5 mx-2">the students' answer,</span>
-                        <span className="fst-italic fs-7">where students collectively construct a single answer</span>
+            {currentPost.postType === "questionPost" && (
+                <>
+                    <div
+                        className="pazza-white-background my-2 mx-2"
+                        style={{
+                            border: "1px solid darkGrey",
+                            borderRadius: "5px",
+                            boxSizing: "border-box",
+                        }}
+                    >
+                        {/* Top bar */}
+                        <div
+                            className="pazza-blue-background text-white px-3 py-2 rounded text-nowrap"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => editPost(currentPost)}
+                        >
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <div className="ms-2"><StudentIcon /></div>
+                                <span className="fw-bold fs-5 mx-2">the students' answer,</span>
+                                <span className="fst-italic fs-7">where students collectively construct a single answer</span>
+                            </div>
+                        </div>
+                        {/* Body */}
+                        Placeholder
                     </div>
-                </div>
-                {/* Body */}
-                Placeholder
-            </div>
-            {/* TODO: instructor answer section component goes here */}
-            <div
-                className="pazza-white-background my-2 mx-2"
-                style={{
-                    border: "1px solid darkGrey",
-                    borderRadius: "5px",
-                    boxSizing: "border-box",
-                }}
-            >
-                {/* Top bar */}
-                <div
-                    style={{
-                        width: "100%",
-                        borderBottom: "1px solid darkGrey",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                    }}
-                    className="p-1"
-                >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <BsFillExclamationSquareFill style={{ transform: "scaleY(-1)" }} className="pazza-instructor-text fs-2 ms-3" />
-                        <span className="fw-bold fs-5 mx-2">the instructors' answer,</span>
-                        <span className="fst-italic fs-7">where instructors collectively construct a single answer</span>
+                    <div
+                        className="pazza-white-background my-2 mx-2"
+                        style={{
+                            border: "1px solid darkGrey",
+                            borderRadius: "5px",
+                            boxSizing: "border-box",
+                        }}
+                    >
+                        {/* Top bar */}
+                        <div
+                            style={{
+                                width: "100%",
+                                borderBottom: "1px solid darkGrey",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                            }}
+                            className="p-1"
+                        >
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <BsFillExclamationSquareFill style={{ transform: "scaleY(-1)" }} className="pazza-instructor-text fs-2 ms-3" />
+                                <span className="fw-bold fs-5 mx-2">the instructors' answer,</span>
+                                <span className="fst-italic fs-7">where instructors collectively construct a single answer</span>
+                            </div>
+                        </div>
+                        {/* Body */}
+                        Placeholder
                     </div>
-                </div>
-                {/* Body */}
-                Placeholder
-            </div>
+                </>)}
             {/* TODO: followup discussion section component goes here */}
             <div
                 className="pazza-white-background my-2 mx-2"
