@@ -11,6 +11,10 @@ export default function FollowUpDiscussion({ post, instructor }: { post: any, in
     const [answer, setAnswer] = useState<any>([]);
     const [replying, setReplying] = useState<boolean>(false);
 
+    useEffect(() => {
+        setReplying(false);
+    }, [post._id]);
+
     const fetchAnswers = async (pid: string) => {
         const answers = instructor
                         ? await answerClient.fetchInstructorAnswers(pid)
