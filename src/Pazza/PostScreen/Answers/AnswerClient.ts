@@ -13,6 +13,21 @@ export const fetchInstructorAnswers = async (pid: string) => {
     return data;
 };
 
+export const fetchAnswersForCourse = async (cid: string) => {
+    const { data } = await axiosWithCredentials.get(`${ANSWERS_API}/${cid}/course`);
+    return data;
+};
+
+export const fetchStudentAnswersForCourse = async (cid: string) => {
+    const { data } = await axiosWithCredentials.get(`${ANSWERS_API}/${cid}/course/student`);
+    return data;
+};
+
+export const fetchInstructorAnswersForCourse = async (cid: string) => {
+    const { data } = await axiosWithCredentials.get(`${ANSWERS_API}/${cid}/course/instructor`);
+    return data;
+};
+
 export const getAnswer = async (aid: string) => {
     const { data } = await axiosWithCredentials.get(`${ANSWERS_API}/${aid}`);
     return data;

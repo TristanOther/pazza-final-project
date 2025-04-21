@@ -14,7 +14,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
     if (!posts) {
         posts = [];
     }
-    const folders = useSelector((state: any) => state.tagsReducer.tags)
+    const folders = useSelector((state: any) => state.tagsReducer.tags);
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const newPost = posts.length === 0;
     const options = [
@@ -28,6 +28,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
     const [users, setUsers] = useState<any[]>([]);
     const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
     const [_, setQuillText] = useState("");
+    const currentLocation = useLocation().pathname.split("/").slice(0, -2).join("/");
 
     const fetchUsersForCourse = async () => {
         const users = await client.findUsersForCourse(cid + "");
@@ -114,7 +115,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                 <div className="d-flex justify-content-left">
                     {options.map(option => (
                         <div className="d-flex p-2" style={{ width: "200px" }} >
-                            <label key={option.id} className={`border-none ${postType === option.id ? 'pazza-light-blue text-dark' : ''}`} htmlFor={option.id} style={{ borderRadius: "5px", padding: "2px" }}>
+                            <label key={option.id} className={`border-none ${postType === option.id ? 'pazza-light-blue-background text-dark' : ''}`} htmlFor={option.id} style={{ borderRadius: "5px", padding: "2px" }}>
                                 <div className="d-flex p-1 align-items-center">
                                     <input
                                         type="radio"
@@ -135,7 +136,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                     ))}
                 </div>
             </div>
-            <div className="p-2 pazza-light-blue width-100">
+            <div className="p-2 pazza-light-blue-background width-100">
                 <div className="d-flex">
                     <h6 className="ms-2 mt-2 text-nowrap pazza-create-text" style={{ fontWeight: "bolder" }}>
                         Post To*
@@ -182,7 +183,7 @@ export default function CreatePostScreen({ fetchPosts, posts }: { fetchPosts: an
                     )}
                 </div>
                 {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") &&
-                    <a className="me-2 ms-5 ps-5" href={"/#" + useLocation().pathname.split("/").slice(0, -2).join("/") + "/Manage/Folders"}>
+                    <a className="me-2 ms-5 ps-5" href={"/#" + currentLocation + "/Manage/Folders"}>
                         Manage and reorder folders
                     </a>}
                 <br />

@@ -15,7 +15,7 @@ export default function PostToolbar({ setSearchTerm }: any) {
         <div
             className="pazza-blue-background text-white px-3 me-2 py-2 rounded text-nowrap"
             style={{ cursor: "pointer" }}
-            onClick={() => navigate(`/Kambaz/Courses/${cid}/Piazza/posts/create`)}
+            onClick={() => navigate(`/Kambaz/Courses/${cid}/Pazza/posts/create`)}
         >
             New Post
         </div>
