@@ -15,6 +15,12 @@ export default function DiscussionPost({ discussionPost, deleteDiscussionPost, e
             {/* Author bar */}
             <div className="d-flex justify-content-between align-items-start">
                 <div className="d-flex align-items-center gap-2">
+                    <img
+                        src={`https://robohash.org/${discussionPost.createdBy}/?set=set4`}
+                        alt="avatar"
+                        width={40}
+                        height={40}
+                    />
                     <span className="fw-bold">{discussionPost?.author?.username}</span>
                     <span className="text-muted">
                         {new Date(discussionPost.createdAt).toLocaleString("en-US", {
@@ -32,7 +38,7 @@ export default function DiscussionPost({ discussionPost, deleteDiscussionPost, e
             </div>
             {/* Content */}
             {!editing && (
-                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(discussionPost.content) }} />
+                <div className="ms-5" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(discussionPost.content) }} />
             )}
             {/* Editor */}
             {editing && (

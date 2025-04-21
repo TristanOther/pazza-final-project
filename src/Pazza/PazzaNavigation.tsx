@@ -1,6 +1,5 @@
 import "./main_styling.css";
 import { useParams, useLocation } from "react-router";
-import { CiUser } from "react-icons/ci";
 import { useSelector } from "react-redux";
 
 export default function PazzaNavigation() {
@@ -37,7 +36,12 @@ export default function PazzaNavigation() {
           ))}
       </div>
       <div className="d-flex align-items-center ms-auto">
-        <CiUser className="fs-2 bg-light" />
+        <img
+          src={`https://robohash.org/${currentUser._id}/?set=set4`}
+          alt="avatar"
+          width={40}
+          height={40}
+        />
         <a style={{ textDecoration: "none" }}>
           <span className={`ms-2 text-white bg-none fw-bold 
                 ${pathname.includes(`/Pazza/Profile/${userName}`) ? "text-decoration-underline" : ""}`}>{userFirstLastName}

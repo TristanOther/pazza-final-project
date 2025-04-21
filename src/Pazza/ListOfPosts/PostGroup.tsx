@@ -51,6 +51,7 @@ export default function PostGroup({ section, posts }: props) {
                         createdAt={post.createdAt}
                         instructor={post.instructor}
                         readBy={!post.readBy.includes(currentUser._id)}
+                        type={post.postType}
                     />
                 </div> 
             ))}
