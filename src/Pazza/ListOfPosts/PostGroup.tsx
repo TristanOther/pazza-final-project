@@ -24,6 +24,7 @@ export default function PostGroup({ section, posts }: props) {
                     borderStyle: "solid",
                     boxShadow: "none",
                     overflow: "hidden",
+                    borderTop: "none",
                 }}
             >
                 <span>{minimized ? '▸' : '▾'}{section}</span>
@@ -31,7 +32,7 @@ export default function PostGroup({ section, posts }: props) {
             {!minimized && posts?.map((post) => (
                 <div 
                     onClick={() => {
-                        navigate(`/Kambaz/Courses/${cid}/Piazza/posts/${post._id}`);
+                        navigate(`/Kambaz/Courses/${cid}/Pazza/posts/${post._id}`);
                     }}
                     className="pazza-grey-border"
                     style={{ 

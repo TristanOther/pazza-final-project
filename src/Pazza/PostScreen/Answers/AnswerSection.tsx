@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import Answer from "./Answer.tsx";
 import ReplyCreator from "../ReplyCreator.tsx";
+import { useSelector } from "react-redux";
 
 import * as answerClient from "./AnswerClient.ts";
 import * as userClient from '../../../Kambaz/Account/client.ts';
-import { useSelector } from "react-redux";
 
 export default function FollowUpDiscussion({ post, instructor }: { post: any, instructor: boolean }) {
     const { currentUser } = useSelector((state: any) => state.accountReducer);

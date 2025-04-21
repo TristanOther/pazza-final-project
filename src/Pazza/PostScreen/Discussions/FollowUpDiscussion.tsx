@@ -134,7 +134,7 @@ export default function FollowUpDiscussion({ post }: { post: any }) {
                                     <div className="mt-2 mx-2">
                                         <ReplyCreator 
                                             onCancel={() => setCurrentReplyField('')}
-                                            onSubmit={(content) => createDiscussionPost(content, dp._id, false)}
+                                            onSubmit={(content) => createDiscussionPost(content, dp._id, true)}
                                         />
                                     </div>
                                 )}

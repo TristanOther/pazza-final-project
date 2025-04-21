@@ -12,6 +12,7 @@ import Session from "./Account/Session";
 
 import * as courseClient from "./Courses/client";
 import * as userClient from "./Account/client";
+import Landing from "../Pazza/Landing";
 
 export default function Kambaz() {
   const [course, setCourse] = useState<any>({
@@ -101,7 +102,8 @@ export default function Kambaz() {
         <KambazNavigation />
         <div className="wd-main-content-offset p-3">
           <Routes>
-            <Route path="/" element={<Navigate to="Account" />} />
+            <Route path="/" element={<Navigate to="Final-Project" />} />
+            <Route path="/Final-Project" element={<Landing />}/>
             <Route path="/Account/*" element={<Account />} />
             <Route 
               path="/Dashboard" 

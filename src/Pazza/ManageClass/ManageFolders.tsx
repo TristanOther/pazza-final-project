@@ -45,7 +45,7 @@ export default function ManageFolders() {
     }
 
     return (
-        <div className="pazza-grey-background pb-2" style={{ width: "100%" }}>
+        <div className="pazza-grey-background py-1" style={{ width: "100%" }}>
             {/* <hr style={{ height: "5px", backgroundColor: "black", border: "none", width: "100%" }} /> */}
             <h3 className="ms-3 mt-3"><strong>Configure Class Folders</strong></h3>
             <span className="ms-3">

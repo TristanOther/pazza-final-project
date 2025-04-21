@@ -1,16 +1,21 @@
 import { BsFillExclamationSquareFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-
-import * as courseClient from "../../Kambaz/Courses/client";
 import { useEffect, useState } from "react";
 import React from "react";
+
+import * as courseClient from "../../Kambaz/Courses/client";
+import * as answerClient from "./Answers/AnswerClient";
+import * as postClient from '../PostScreen/PostClient';
 
 export default function ClassAtAGlance({ posts }: {posts: any}) {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { cid } = useParams();
     const [enrollments, setEnrollments] = useState<any>([]);
     const unreadPosts = posts ? posts.filter((p: any) => !p.readBy.includes(currentUser._id)).length : 0;
+    const [studentResponseCount, setStudentResponseCount] = useState<number>(0);
+    const [instructorResponseCount, setInstructorResponseCount] = useState<number>(0);
+    const [unansweredQuestionCount, setUnansweredQuestionCount] = useState<number>(0);
 
     useEffect(() => {
         const fetchEnrollments = async () => {
@@ -22,7 +27,29 @@ export default function ClassAtAGlance({ posts }: {posts: any}) {
                 console.log(err);
             }
         }
+
+        const fetchAnswerCountsForCourse = async () => {
+            if (!cid) return;
+            try {
+                const totalAnswers = await answerClient.fetchAnswersForCourse(cid);
+                const questions = await postClient.fetchPosts(cid);
+
+                const unAnsweredQuestions = questions.filter((q: any) => !totalAnswers.some((a: any) => a.post === q._id));
+                const studentAnswers = totalAnswers.filter((a: any) => !a.instructor);
+                const instructorAnswers = totalAnswers.filter((a: any) => a.instructor);
+
+                setUnansweredQuestionCount(unAnsweredQuestions.length);
+                setStudentResponseCount(studentAnswers.length);
+                setInstructorResponseCount(instructorAnswers.length);
+
+                
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
         fetchEnrollments();
+        fetchAnswerCountsForCourse();
     }, [cid]);
 
     return (
@@ -59,7 +86,7 @@ export default function ClassAtAGlance({ posts }: {posts: any}) {
                     </div>
                     <div className="mb-2" style={{ display: "flex", alignItems: "center" }}>
                         <BsFillExclamationSquareFill  className="pazza-crimson-text me-2 fs-2" />
-                        <span className="fw-bold">PLACEHOLDER Unanswered Posts</span>
+                        <span className="fw-bold">{unansweredQuestionCount} Unanswered Posts</span>
                     </div>
                 </div>
 
@@ -67,8 +94,8 @@ export default function ClassAtAGlance({ posts }: {posts: any}) {
                 <div style={{ display: "grid", gridTemplateColumns: "max-content 1fr", rowGap: "0.5rem", columnGap: "1rem" }}>
                     {[
                         [posts?.length, "Total Posts"],
-                        ["PLACEHOLDER", "Instructor Responses"],
-                        ["PLACEHOLDER", "Student Responses"],
+                        [instructorResponseCount, "Instructor Responses"],
+                        [studentResponseCount, "Student Responses"],
                         [enrollments?.length, "Enrolled Students"],
                     ].map(([value, description], index) => (
                         <React.Fragment key={index}>

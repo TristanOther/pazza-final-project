@@ -9,7 +9,7 @@ export default function PazzaNavigation() {
   const userFirstLastName = currentUser ? currentUser.firstName + " " + currentUser.lastName : "Log In";
   const userName = currentUser ? currentUser.username : "Log In";
   const { pathname } = useLocation();
-  const homeLink = "/#" + pathname.split("Piazza").slice(0, 1).join("/") + "Piazza";
+  const homeLink = "/#" + pathname.split("Pazza").slice(0, 1).join("/") + "Pazza";
 
   const navbar_links = [
     { label: "Q & A", path: "", faculty_only: false },
@@ -29,8 +29,8 @@ export default function PazzaNavigation() {
           .map((link) => (
             <a href={homeLink + (link.path == "" ? "" : "/" + link.path)} style={{ textDecoration: "none" }} >
               <span className={`text-white me-4 fw-bold
-              ${((pathname.split("/Piazza")[1] === "" && link.path === "") ||
-                  pathname.split("/Piazza")[1].includes(link.path) && link.path != "")
+              ${((pathname.split("/Pazza")[1] === "" && link.path === "") ||
+                  pathname.split("/Pazza")[1].includes(link.path) && link.path != "")
                   ? "text-decoration-underline" : ""}`}>{link.label}
               </span>
             </a>
@@ -40,7 +40,7 @@ export default function PazzaNavigation() {
         <CiUser className="fs-2 bg-light" />
         <a style={{ textDecoration: "none" }}>
           <span className={`ms-2 text-white bg-none fw-bold 
-                ${pathname.includes(`/Piazza/Profile/${userName}`) ? "text-decoration-underline" : ""}`}>{userFirstLastName}
+                ${pathname.includes(`/Pazza/Profile/${userName}`) ? "text-decoration-underline" : ""}`}>{userFirstLastName}
           </span>
         </a>
       </div>

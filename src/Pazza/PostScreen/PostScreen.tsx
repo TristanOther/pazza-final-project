@@ -60,6 +60,7 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
             e.preventDefault();
         } else if (target?.value === "Delete") {
             deletePost(postId);
+            actions_dd.value = "Actions";
             e.preventDefault();
         }
     });
@@ -151,7 +152,7 @@ export default function PostScreen({ fetchPosts, markPostRead }: { fetchPosts: (
                         return (
                             <div
                                 key={t._id}
-                                className="pazza-light-blue pazza-blue-text"
+                                className="pazza-light-blue-background pazza-blue-text"
                                 style={{
                                     padding: "4px 10px",
                                     borderRadius: "20px",
