@@ -17,6 +17,21 @@ export default function Posts() {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [unreadFilter, setUnreadFilter] = useState<boolean>(false);
 
+    const markPostRead = async (pid: string, uid: string) => {
+        const post = posts?.find((p) => p._id === pid);
+        if (!post) return;
+        try {
+            const postUpdates = {
+                _id: pid,
+                readBy: post.readBy.includes(uid) ? post.readBy : [...post.readBy, uid],
+                viewedBy: post.viewedBy.includes(uid) ? post.viewedBy : [...post.viewedBy, uid],
+            };
+            await postClient.updatePost(postUpdates);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     const fetchPosts = async () => {
         try {
             const posts = await postClient.fetchPosts(cid as string);
@@ -46,23 +61,7 @@ export default function Posts() {
         if (cid) {
             fetchPosts();
         }
-    }, [cid, unreadFilter]);
-
-    const markPostRead = async (pid: string, uid: string) => {
-        const post = posts?.find((p) => p._id === pid);
-        if (!post) return;
-        try {
-            const postUpdates = {
-                _id: pid,
-                readBy: post.readBy.includes(uid) ? post.readBy : [...post.readBy, uid],
-                viewedBy: post.viewedBy.includes(uid) ? post.viewedBy : [...post.viewedBy, uid],
-            };
-            await postClient.updatePost(postUpdates);
-            await fetchPosts();
-        } catch (err) {
-            console.log(err);
-        }
-    }
+    }, [cid, unreadFilter, markPostRead]);
 
     return (
         <div className="pazza-grey-background">
@@ -70,7 +69,7 @@ export default function Posts() {
             <div style={{ width: "100%", border: "1px solid #aaa" }}>
                 <FileFolderNavigation />
             </div>
-            <div className="d-flex" style={{ width: "100%", height: "90vh"}}>
+            <div className="d-flex" style={{ width: "100%" }}>
                 {!showLops && (
                     <Button
                         variant="outline-secondary"

@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
-
-import * as discussionPostClient from "./DiscussionPostClient.ts";
-import * as userClient from '../../../Kambaz/Account/client.ts';
 import DiscussionPost from "./DiscussionPost";
 import ReplyCreator from "../ReplyCreator";
 import { useSelector } from "react-redux";
+
+import * as discussionPostClient from "./DiscussionPostClient.ts";
+import * as userClient from '../../../Kambaz/Account/client.ts';
 
 export default function FollowUpDiscussion({ post }: { post: any }) {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [discussionPosts, setDiscussionPosts] = useState<any>([]);
     const [currentReplyField, setCurrentReplyField] = useState<string>('');
+
+    useEffect(() => {
+        setCurrentReplyField('');
+    }, [post._id]);
 
     const fetchDiscussionPosts = async (pid: string): Promise<any[]> => {
         const discussionPosts = await discussionPostClient.fetchDiscussionPosts(pid);
