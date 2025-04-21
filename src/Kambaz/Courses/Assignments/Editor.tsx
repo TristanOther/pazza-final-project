@@ -32,14 +32,11 @@ export default function AssignmentEditor() {
 
   const createAssignmentForCourse = async () => {
     if (!cid) return;
-    console.log(assignment);
     const a = await coursesClient.createAssignmentForCourse(cid, formData);
-    console.log(a);
     dispatch(addAssignment(a));
   };
 
   const saveAssignment = async () => {
-    console.log(assignment);
     await assignmentsClient.updateAssignment(formData);
     dispatch(updateAssignment(assignment));
   };

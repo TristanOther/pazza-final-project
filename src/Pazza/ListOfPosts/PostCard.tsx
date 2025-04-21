@@ -1,6 +1,7 @@
 import { useLocation } from "react-router";
 import InstructorTag from "./InstructorTag";
 import UnreadIndicator from "./UnreadIndicator";
+import { CgNotes } from "react-icons/cg";
 
 interface props {
   id: string,
@@ -9,6 +10,7 @@ interface props {
   createdAt: Date,
   instructor: boolean,
   readBy: boolean,
+  type: string
 }
 
 // Function that shortens text to a specified length, adding a ... to indicate if the text was shortened.
@@ -29,7 +31,7 @@ function humanReadable(text: string) {
     .join('\n');
 }
 
-export default function PostCard({ id, title, content, createdAt, instructor, readBy }: props) {
+export default function PostCard({ id, title, content, createdAt, instructor, readBy, type }: props) {
   const location = useLocation();
   const pid = location.pathname.split("/").pop();
 
@@ -44,7 +46,10 @@ export default function PostCard({ id, title, content, createdAt, instructor, re
                 </div>
                 <p className="mb-0 text-secondary" style={{ maxWidth: "15vw", wordBreak: "break-word", whiteSpace: "pre-line" }}>{humanReadable(shortenText(content, 150))}</p>
             </div>
-            <span className="text-muted ms-auto me-2 mt-1">{new Date(createdAt).toLocaleDateString()}</span>
+            <div className="text-muted ms-auto me-2 mt-1 d-flex flex-column align-items-end">
+              <span>{new Date(createdAt).toLocaleDateString()}</span>
+              {type === "notePost" && <CgNotes color="gray" size={24} />}
+            </div>
         </div>
     </div>
   );
